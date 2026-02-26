@@ -1,0 +1,3 @@
+[submodule "Deep-Generative-Modeling"]
+	path = Projects/Deep-Generative-Modeling
+	url = https://github.com/nickiliak/Deep-Generative-Modeling.git
