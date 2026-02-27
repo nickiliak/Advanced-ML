@@ -100,7 +100,16 @@ class GaussianEncoder(nn.Module):
         mean, std = torch.chunk(self.encoder_net(x), 2, dim=-1)
         return td.Independent(td.Normal(loc=mean, scale=torch.exp(std)), 1)
 
+class MultivariateGaussianDecoder(nn.Module):
+    def __init__(self, decoder_net):
+        super(MultivariateGaussianDecoder, self).__init__()
+        self.decoder_net = decoder_net
+        self.std = nn.Parameter(torch.ones(28, 28)*0.5, requires_grad=True)
 
+    def forward(self, z):
+        logits = self.decoder_net(z)
+        return td.Independent(td.MultivariateNormal(loc=logits))
+    
 class BernoulliDecoder(nn.Module):
     def __init__(self, decoder_net):
         """
@@ -126,7 +135,6 @@ class BernoulliDecoder(nn.Module):
         """
         logits = self.decoder_net(z)
         return td.Independent(td.Bernoulli(logits=logits), 2)
-
 
 class VAE(nn.Module):
     """
