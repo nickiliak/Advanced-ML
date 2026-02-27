@@ -34,7 +34,11 @@ Add the following functionality to the implementation (vae_bernoulli.py) of the 
 
 **Answer:**
 
-<!-- Add your answer here -->
+- The ELBO on the binarised MNIST test set is evaluated using the `evaluate_elbo` function in `plot_posterior.py`, which computes the average ELBO across all test samples by iterating through the test loader and calling the model's `elbo` method.
+- Samples from the approximate posterior are visualized using the `plot_aggregate_posterior` function. This function collects latent samples for each test datapoint, colors them by their true class label, and saves the resulting plot. If the latent dimension $M > 2$, PCA is applied to project the samples onto the first two principal components before plotting.
+- The resulting plot can be found here:  
+  ![Aggregate Posterior Samples - Gaussian Prior](posterior_plot_normal.png)
+- This visualization shows how the VAE's latent space clusters according to digit class, and how PCA is used for higher-dimensional latent spaces.
 
 
 ### Question 1.6: VAE with Mixture of Gaussian Prior
@@ -45,7 +49,27 @@ Extend the VAE with Bernoulli output distributions (vae_bernoulli.py) to use a m
 
 **Answer:**
 
-<!-- Add your answer here -->
+**Test Set ELBO Comparison:**
+- Gaussian Prior: **-93.12**
+- Mixture of Gaussians Prior: **-91.83**
+
+The MoG prior achieves a higher (less negative) ELBO, indicating better performance. The improvement is approximately 1.3 nats per sample.
+
+**Posterior Visualization:**
+
+Gaussian Prior:
+![Aggregate Posterior - Gaussian Prior](posterior_plot_normal.png)
+
+Mixture of Gaussians Prior:
+![Aggregate Posterior - MoG Prior](posterior_plot_mog.png)
+
+**Observations:**
+- The clusters are more clearly separated with the MoG prior compared to the Gaussian prior.
+- The first two principal components capture more of the variance with MoG, indicating that the latent space has learned a more structured representation.
+- Digit classes form tighter, more distinct clusters with MoG, suggesting better class separation in the latent space.
+- The MoG prior naturally aligns with the multi-class structure of MNIST, where each mixture component can specialize for different digit types.
+
+The MoG prior provides both quantitative improvement (higher ELBO) and qualitative improvement (better clustering).
 
 
 ### Question 1.7: VAE with Continuous Output Distributions

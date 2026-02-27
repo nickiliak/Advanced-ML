@@ -38,6 +38,42 @@ class GaussianPrior(nn.Module):
         """
         return td.Independent(td.Normal(loc=self.mean, scale=self.std), 1)
 
+class GaussianPriorMog(nn.Module):
+    """
+    Define a Mixture of Gaussians prior distribution.
+    
+    Parameters are initialized randomly, allowing the model to learn K distinct
+    Gaussian components in the latent space.
+    """
+    def __init__(self, M, num_components=5):
+        """
+        Define a Mixture of Gaussians prior distribution.
+
+        Parameters:
+        M: [int] 
+           Dimension of the latent space.
+        num_components: [int]
+           Number of Gaussian components in the mixture (default: 5).
+        """
+        super(GaussianPriorMog, self).__init__()
+        self.M = M
+        self.num_components = num_components
+        self.means = nn.Parameter(torch.randn(num_components, M))
+        self.log_stds = nn.Parameter(torch.zeros(num_components, M))
+        self.mix = td.Categorical(torch.ones(num_components))
+    
+    def forward(self):
+        """
+        Return the mixture of Gaussians prior distribution.
+
+        Returns:
+        prior: [torch.distributions.Distribution]
+           A MixtureSameFamily distribution with num_components Gaussian components.
+        """
+        base_dist = td.Independent(
+            td.Normal(self.means, torch.exp(self.log_stds)), 1
+        )
+        return td.MixtureSameFamily(self.mix, base_dist)
 
 class GaussianEncoder(nn.Module):
     def __init__(self, encoder_net):
@@ -124,7 +160,14 @@ class VAE(nn.Module):
         """
         q = self.encoder(x)
         z = q.rsample()
-        elbo = torch.mean(self.decoder(z).log_prob(x) - td.kl_divergence(q, self.prior()), dim=0)
+        
+        # Compute KL divergence: KL(q || p) = E_q[log q - log p]
+        # This works for any prior (Gaussian or MixtureSameFamily)
+        log_qz = q.log_prob(z)
+        log_pz = self.prior().log_prob(z)
+        kl = log_qz - log_pz
+        
+        elbo = torch.mean(self.decoder(z).log_prob(x) - kl, dim=0)
         return elbo
 
     def sample(self, n_samples=1):
@@ -193,6 +236,7 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('mode', type=str, default='train', choices=['train', 'sample', 'eval'], help='what to do when running the script (default: %(default)s)')
+    parser.add_argument('prior', type=str, default='normal', choices=['normal', 'mixture'], help='what to do when running the script (default: %(default)s)')
     parser.add_argument('--model', type=str, default='model.pt', help='file to save model to or load model from (default: %(default)s)')
     parser.add_argument('--samples', type=str, default='samples.png', help='file to save samples in (default: %(default)s)')
     parser.add_argument('--device', type=str, default='cpu', choices=['cpu', 'cuda', 'mps'], help='torch device (default: %(default)s)')
@@ -218,7 +262,11 @@ if __name__ == "__main__":
 
     # Define prior distribution
     M = args.latent_dim
-    prior = GaussianPrior(M)
+    
+    if args.prior == 'normal':
+        prior = GaussianPrior(M)
+    elif args.prior == 'mixture':
+        prior = GaussianPriorMog(M)
 
     # Define encoder and decoder networks
     encoder_net = nn.Sequential(
@@ -273,10 +321,34 @@ if __name__ == "__main__":
         model.load_state_dict(torch.load(args.model, map_location=torch.device(args.device)))
         model.eval()
 
+        # Find the next run number
+        output_base = 'Week1/outputs'
+        os.makedirs(output_base, exist_ok=True)
+        
+        run_num = 1
+        while os.path.exists(os.path.join(output_base, f'run{run_num}')):
+            run_num += 1
+        
+        run_dir = os.path.join(output_base, f'run{run_num}')
+        os.makedirs(run_dir, exist_ok=True)
+
         # Evaluate ELBO on test set
         mean_elbo = evaluate_elbo(model, mnist_test_loader, device)
 
         # Plot aggregate posterior
-        output_path = 'Week1/outputs/posterior_plot.png'
+        output_path = os.path.join(run_dir, 'posterior_plot.png')
         plot_aggregate_posterior(model, mnist_test_loader, args.latent_dim, device, 
                         save_path=output_path)
+        
+        # Save parameters to file
+        params_path = os.path.join(run_dir, 'params.txt')
+        with open(params_path, 'w') as f:
+            for key, value in sorted(vars(args).items()):
+                f.write(f"{key} = {value}\n")
+        
+        # Save ELBO to file
+        elbo_path = os.path.join(run_dir, 'elbo.txt')
+        with open(elbo_path, 'w') as f:
+            f.write(f"Test Set ELBO: {mean_elbo:.4f}\n")
+        
+        print(f"Results saved to {run_dir}")

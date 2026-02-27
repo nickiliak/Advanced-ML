@@ -18,13 +18,15 @@ If `answer_text` is not provided, ask the user to provide it.
 ## Required Repository Convention
 - Week folder: `WeekN/`
 - Exactly one exercise PDF in `WeekN/` (for example `02460_week1_exercises.pdf`)
-- Week README file: prefer `WeekN/README.md`, fallback to `WeekN/README.MD`
+- Answers folder: `WeekN/answers/` (create if missing)
+- Week README file: `WeekN/answers/README.md` (create if missing)
 
 ## Procedure
 1. Normalize week input using [week mapping](./references/week-and-question-normalization.md).
 2. Open `WeekN/` and locate:
    - the week PDF (`*.pdf`)
-   - the week README (`README.md` or `README.MD`)
+   - the answers folder (`WeekN/answers/`), create if missing
+   - the week README (`WeekN/answers/README.md`), create if missing
 3. Read the week PDF exercise text and identify the exact target question using the normalized question token.
 4. In week README, find a heading that matches the target question pattern from [heading matching rules](./references/week-and-question-normalization.md).
 5. Append the answer directly below the matched heading using this block:
@@ -34,10 +36,13 @@ If `answer_text` is not provided, ask the user to provide it.
    <answer_text>
    ```
 
-6. Preserve existing content and formatting. Do not reorder sections.
+6. If the answer references images from `WeekN/outputs/`, copy those images to `WeekN/answers/` and update image paths in the README to use relative paths (e.g., `![description](image.png)`).
+7. Preserve existing content and formatting. Do not reorder sections.
 
 ## Fallback Rules
 - If week folder is missing: report missing `WeekN/` and ask user to add it.
+- If answers folder is missing: create `WeekN/answers/`.
+- If README is missing in answers folder: create `WeekN/answers/README.md` with basic structure.
 - If PDF is missing or multiple PDFs exist: report ambiguity and ask user to choose file.
 - If no matching heading exists in README: append a new section at end:
 
@@ -53,4 +58,5 @@ If `answer_text` is not provided, ask the user to provide it.
 ## Output Contract
 - State which files were used.
 - State whether answer was inserted under existing heading or new section.
+- List any images copied to the answers folder.
 - Do not modify files outside the selected week folder.

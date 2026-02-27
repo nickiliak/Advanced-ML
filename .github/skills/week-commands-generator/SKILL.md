@@ -1,3 +1,8 @@
+---
+name: week-commands-generator
+description: "Generate and update commands for a specific week in its corresponding WeekN/commands.md file. Use when user asks to generate/update week commands (for example 'week 1 commands' or 'update Week2 commands'). Inspects the Python script's argument parser and creates command examples for all available modes."
+---
+
 # Week Commands Generator
 
 ## Purpose
@@ -49,4 +54,3 @@ uv run WeekN/script.py [mode] [parameters]
 - Confirm `WeekN/commands.md` was created or updated
 - Do not modify root commands.md or files outside WeekN/
 - Keep output concise
-
