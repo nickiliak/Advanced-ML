@@ -10,7 +10,10 @@ import torch.distributions as td
 import torch.utils.data
 from torch.nn import functional as F
 from tqdm import tqdm
+import os
 
+#my imports
+from plot_posterior import evaluate_elbo, plot_aggregate_posterior
 
 class GaussianPrior(nn.Module):
     def __init__(self, M):
@@ -125,7 +128,7 @@ class VAE(nn.Module):
         return elbo
 
     def sample(self, n_samples=1):
-        """
+        """ 
         Sample from the model.
         
         Parameters:
@@ -189,7 +192,7 @@ if __name__ == "__main__":
     # Parse arguments
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('mode', type=str, default='train', choices=['train', 'sample'], help='what to do when running the script (default: %(default)s)')
+    parser.add_argument('mode', type=str, default='train', choices=['train', 'sample', 'eval'], help='what to do when running the script (default: %(default)s)')
     parser.add_argument('--model', type=str, default='model.pt', help='file to save model to or load model from (default: %(default)s)')
     parser.add_argument('--samples', type=str, default='samples.png', help='file to save samples in (default: %(default)s)')
     parser.add_argument('--device', type=str, default='cpu', choices=['cpu', 'cuda', 'mps'], help='torch device (default: %(default)s)')
@@ -249,6 +252,8 @@ if __name__ == "__main__":
         # Train model
         train(model, optimizer, mnist_train_loader, args.epochs, args.device)
 
+        # Create checkpoint directory if it doesn't exist
+        os.makedirs(os.path.dirname(args.model) or '.', exist_ok=True)
         # Save model
         torch.save(model.state_dict(), args.model)
 
@@ -258,5 +263,20 @@ if __name__ == "__main__":
         # Generate samples
         model.eval()
         with torch.no_grad():
-            samples = (model.sample(64)).cpu() 
+            samples = (model.sample(64)).cpu()
+            # Create samples directory if it doesn't exist
+            os.makedirs(os.path.dirname(args.samples) or '.', exist_ok=True)
             save_image(samples.view(64, 1, 28, 28), args.samples)
+            
+    elif args.mode == 'eval':
+        # After loading the model in 'sample' or evaluation mode:
+        model.load_state_dict(torch.load(args.model, map_location=torch.device(args.device)))
+        model.eval()
+
+        # Evaluate ELBO on test set
+        mean_elbo = evaluate_elbo(model, mnist_test_loader, device)
+
+        # Plot aggregate posterior
+        output_path = 'Week1/outputs/posterior_plot.png'
+        plot_aggregate_posterior(model, mnist_test_loader, args.latent_dim, device, 
+                        save_path=output_path)

@@ -82,4 +82,3 @@ dmypy.json
 
 # Paper/documentation build files
 _build/
-*.pdf

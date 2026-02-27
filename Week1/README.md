@@ -12,7 +12,17 @@ Inspect the code in vae_bernoulli.py and answer the following questions:
 
 **Answer:**
 
-<!-- Add your answer here -->
+The reparameterization trick is implemented using `q.rsample()` in the ELBO computation. Instead of using `sample()` which breaks gradient flow, `rsample()` performs a reparameterized sample that allows backpropagation through the sampling operation. Mathematically, it samples from a standard normal distribution and transforms it using the learned parameters: z = μ + σ * ε, where ε ~ N(0,1), making this transformation differentiable and enabling gradient flow through the encoder.
+
+For the ELBO implementation:
+- The dimension of `self.decoder(z).log_prob(x)` is `(batch_size,)`, where each entry is the total log probability for one image in the batch. This is because `td.Independent` sums the log probabilities over all pixels for each sample.
+- The dimension of `td.kl_divergence(q, self.prior())` is also `(batch_size,)`, as the KL divergence is computed independently for each sample in the batch.
+
+Both terms return a vector with one value per sample, not per pixel, because the distribution objects aggregate over the image dimensions.
+
+`td.Independent` creates a distribution where each variable (e.g., pixel or latent dimension) is treated as independent. In the code, this means the prior, encoder, and decoder model each pixel or latent variable as independent, and the log probabilities are aggregated (summed) across all those dimensions for each sample.
+
+The function `torch.chunk` in `GaussianEncoder.forward` splits the output of the encoder network into two tensors along the last dimension: one for the mean and one for the standard deviation of the Gaussian distribution. This is necessary because the encoder network outputs both parameters concatenated together, and they need to be separated to define the Gaussian distribution for the latent variables.
 
 
 ### Question 1.5: VAE with Bernoulli Output - Extensions
