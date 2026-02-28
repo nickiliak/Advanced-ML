@@ -33,7 +33,9 @@ Use conservative grading:
 
 ## Procedure
 1. Normalize week/question with [normalization rules](./references/reply-contract.md).
-2. Load the corresponding week PDF and locate the target question statement.
+2. Load the corresponding week PDF using the [`pdf_reader.py`](../scripts/pdf_reader.py) script and locate the target question statement.
+   - Use `read_pdf_text(pdf_path)` to extract PDF text
+   - Use `extract_question_text(pdf_text, question_number)` to get the specific question
 3. Compare `user_answer` only against the question requirements and constraints.
 4. Produce no-spoiler response using the fixed response contract below.
 
@@ -55,3 +57,4 @@ Hint: <optional one-sentence directional hint; omit if Correct>
 ## Fallback Rules
 - Missing week folder/PDF/question -> state what is missing and ask user for exact reference.
 - Ambiguous question mapping -> ask user to confirm the exact question label.
+- If PDF cannot be parsed: Use the [`pdf_reader.py`](../scripts/pdf_reader.py) script to extract and search the text. If still unable to find the question, ask the user to provide the question text.

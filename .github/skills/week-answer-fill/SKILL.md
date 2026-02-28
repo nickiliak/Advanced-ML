@@ -27,7 +27,9 @@ If `answer_text` is not provided, ask the user to provide it.
    - the week PDF (`*.pdf`)
    - the answers folder (`WeekN/answers/`), create if missing
    - the week README (`WeekN/answers/README.md`), create if missing
-3. Read the week PDF exercise text and identify the exact target question using the normalized question token.
+3. Read the week PDF exercise text using the [`pdf_reader.py`](../scripts/pdf_reader.py) script and identify the exact target question using the normalized question token.
+   - Use `read_pdf_text(pdf_path)` to extract PDF text
+   - Use `extract_question_text(pdf_text, question_number)` to get the specific question
 4. In week README, find a heading that matches the target question pattern from [heading matching rules](./references/week-and-question-normalization.md).
 5. Append the answer directly below the matched heading using this block:
 
@@ -45,15 +47,12 @@ If `answer_text` is not provided, ask the user to provide it.
 - If README is missing in answers folder: create `WeekN/answers/README.md` with basic structure.
 - If PDF is missing or multiple PDFs exist: report ambiguity and ask user to choose file.
 - If no matching heading exists in README: append a new section at end:
-
   ```markdown
   ## Question <normalized-question>
-
   **Answer:**
   <answer_text>
   ```
-
-- If PDF cannot be parsed, ask the user to provide the exercise text snippet for the target question.
+- If PDF cannot be parsed: Use the [`pdf_reader.py`](../scripts/pdf_reader.py) script to extract text. If parsing still fails, ask the user to provide the exercise text snippet for the target question.
 
 ## Output Contract
 - State which files were used.
