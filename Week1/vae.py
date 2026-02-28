@@ -104,12 +104,13 @@ class MultivariateGaussianDecoder(nn.Module):
     def __init__(self, decoder_net):
         super(MultivariateGaussianDecoder, self).__init__()
         self.decoder_net = decoder_net
-        self.std = nn.Parameter(torch.ones(28, 28)*0.5, requires_grad=True)
+        self.log_std = nn.Parameter(torch.ones(28, 28)*torch.log(torch.tensor(0.5)), requires_grad=True)
 
     def forward(self, z):
         logits = self.decoder_net(z)
-        return td.Independent(td.MultivariateNormal(loc=logits))
-    
+        scale = torch.exp(self.log_std)
+        return td.Independent(td.Normal(loc=logits, scale=scale), 2)
+            
 class BernoulliDecoder(nn.Module):
     def __init__(self, decoder_net):
         """
@@ -189,6 +190,17 @@ class VAE(nn.Module):
         z = self.prior().sample(torch.Size([n_samples]))
         return self.decoder(z).sample()
     
+    def sample_mean(self, n_samples=1):
+        """
+        Sample from the prior and return the MEAN of p(x|z).
+        
+        Parameters:
+        n_samples: [int]
+           Number of samples to generate.
+        """
+        z = self.prior().sample(torch.Size([n_samples]))
+        return self.decoder(z).mean
+    
     def forward(self, x):
         """
         Compute the negative ELBO for the given batch of data.
@@ -245,6 +257,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('mode', type=str, default='train', choices=['train', 'sample', 'eval'], help='what to do when running the script (default: %(default)s)')
     parser.add_argument('prior', type=str, default='normal', choices=['normal', 'mixture'], help='what to do when running the script (default: %(default)s)')
+    parser.add_argument('--dataset', type=str, default='binary', choices=['binary', 'continuous'], help='MNIST dataset type: binary (thresholded at 0.5) or continuous (raw pixel values) (default: %(default)s)')
+    parser.add_argument('--decoder', type=str, default='bernoulli', choices=['bernoulli', 'gaussian'], help='decoder type: bernoulli (for binary data) or gaussian (multivariate for continuous data) (default: %(default)s)')
     parser.add_argument('--model', type=str, default='model.pt', help='file to save model to or load model from (default: %(default)s)')
     parser.add_argument('--samples', type=str, default='samples.png', help='file to save samples in (default: %(default)s)')
     parser.add_argument('--device', type=str, default='cpu', choices=['cpu', 'cuda', 'mps'], help='torch device (default: %(default)s)')
@@ -259,13 +273,21 @@ if __name__ == "__main__":
 
     device = args.device
 
-    # Load MNIST as binarized at 'thresshold' and create data loaders
-    thresshold = 0.5
+    # Define dataset transform based on dataset type
+    if args.dataset == 'binary':
+        # Load MNIST as binarized at threshold
+        thresshold = 0.5
+        dataset_transform = transforms.Compose([transforms.ToTensor(), transforms.Lambda(lambda x: (thresshold < x).float().squeeze())])
+    else:  # continuous
+        # Load MNIST as continuous (raw pixel values)
+        dataset_transform = transforms.Compose([transforms.ToTensor(), transforms.Lambda(lambda x: x.squeeze())])
+
+    # Create data loaders
     mnist_train_loader = torch.utils.data.DataLoader(datasets.MNIST('data/', train=True, download=True,
-                                                                    transform=transforms.Compose([transforms.ToTensor(), transforms.Lambda(lambda x: (thresshold < x).float().squeeze())])),
+                                                                    transform=dataset_transform),
                                                     batch_size=args.batch_size, shuffle=True)
     mnist_test_loader = torch.utils.data.DataLoader(datasets.MNIST('data/', train=False, download=True,
-                                                                transform=transforms.Compose([transforms.ToTensor(), transforms.Lambda(lambda x: (thresshold < x).float().squeeze())])),
+                                                                transform=dataset_transform),
                                                     batch_size=args.batch_size, shuffle=True)
 
     # Define prior distribution
@@ -296,7 +318,10 @@ if __name__ == "__main__":
     )
 
     # Define VAE model
-    decoder = BernoulliDecoder(decoder_net)
+    if args.decoder == 'bernoulli':
+        decoder = BernoulliDecoder(decoder_net)
+    elif args.decoder == 'gaussian':
+        decoder = MultivariateGaussianDecoder(decoder_net)
     encoder = GaussianEncoder(encoder_net)
     model = VAE(prior, decoder, encoder).to(device)
 
@@ -319,10 +344,23 @@ if __name__ == "__main__":
         # Generate samples
         model.eval()
         with torch.no_grad():
-            samples = (model.sample(64)).cpu()
+            # Method 1: Sample from distribution (noisy)
+            samples_noisy = model.sample(64).cpu()
+            # Method 2: Take mean (clean)
+            samples_mean = model.sample_mean(64).cpu()
+            
             # Create samples directory if it doesn't exist
             os.makedirs(os.path.dirname(args.samples) or '.', exist_ok=True)
-            save_image(samples.view(64, 1, 28, 28), args.samples)
+            
+            # Save both versions
+            noisy_path = args.samples.replace('.png', '_noisy.png')
+            mean_path = args.samples.replace('.png', '_mean.png')
+            
+            save_image(samples_noisy.view(64, 1, 28, 28), noisy_path)
+            save_image(samples_mean.view(64, 1, 28, 28), mean_path)
+            
+            print(f"Noisy samples saved to: {noisy_path}")
+            print(f"Mean samples saved to: {mean_path}")
             
     elif args.mode == 'eval':
         # After loading the model in 'sample' or evaluation mode:

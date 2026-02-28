@@ -82,7 +82,31 @@ Optional: You can also try the Continuous Bernoulli output distribution.
 
 **Answer:**
 
-<!-- Add your answer here -->
+**Qualitative Sample Quality with Multivariate Gaussian Decoder:**
+
+With the multivariate Gaussian output distribution using continuous MNIST pixel values, the samples show reasonable quality with visible digit structures. However, there is noticeable graininess/noise in the generated samples due to the stochastic sampling step.
+
+**Comparison: Sampling from p(x|z) vs. Mean of p(x|z):**
+
+The mean predictions are **extremely better** than sampling from the distribution:
+
+- **Sampling from p(x|z)**: The samples exhibit significant pixel-level noise because we are sampling from a Gaussian distribution for each pixel. This adds random Gaussian noise on top of the decoder's learned parameters, resulting in grainy, noisy-looking digits.
+
+- **Using the mean of p(x|z)**: The mean predictions are dramatically cleaner and sharper. By taking the mean of the Gaussian distribution without the sampling noise step, we get the decoder's most confident prediction. The resulting images show well-defined digit structures with crisp edges and minimal noise.
+
+**Key Insight:**
+
+The mean is qualitatively superior because it eliminates the final stochastic layer. When we sample from p(x|z), we introduce additional pixel-level Gaussian noise which obscures the learned structure. The mean, however, captures the deterministic part of what the decoder learned, resulting in much cleaner and more interpretable samples. This suggests that for generation quality, using the decoder's mean prediction (`decoder(z).mean`) produces significantly better visual results compared to sampling (`decoder(z).sample()`).
+
+**Visual Comparison:**
+
+Noisy Samples (sampling from p(x|z)):
+![Noisy Samples](samples_noisy.png)
+
+Mean Samples (mean of p(x|z)):
+![Mean Samples](samples_mean.png)
+
+As shown in the figures above, the mean samples are dramatically cleaner and sharper with well-defined digit structures, while the noisy samples exhibit significant grain and pixelated artifacts from the stochastic sampling.
 
 
 ### Question 1.8: VAE with CNN-Based Architecture (Optional)
