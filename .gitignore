@@ -72,7 +72,6 @@ htmlcov/
 
 # Jupyter Notebook
 .ipynb_checkpoints/
-*.ipynb
 
 # Analysis
 .mypy_cache/
