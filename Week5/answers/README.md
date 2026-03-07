@@ -28,6 +28,25 @@ Consider the Bernoulli VAE that you worked on in Week 1. Train this with a two-d
 
 1. Write a computer program that evaluates the length of any latent second-order polynomial curve c using Eq. 4.2 in the LMLG book. It is recommended that you write the code to support any callable curve c.
 
+2. (Continued in notebook) Evaluate how the VAE decoder transforms curves in latent space to output space.
+
 **Answer:**
 
-<!-- Add your answer here -->
+The implementation in `evaluate_vae_curve.ipynb` evaluates curve lengths in both latent and output (pixel) space:
+
+**Latent Space:** 
+- Curve: z₁(t) = t, z₂(t) = t² (second-order polynomial)
+- Evaluated using Eq. 4.2 (sum of consecutive distances)
+- **Length: 1.4789**
+
+**Output Space:**
+- Same polynomial curve passed through VAE decoder
+- Decoder outputs 28×28 MNIST digit images
+- **Length: 67.5504** (flattened pixel distance)
+
+**Key Finding:** The VAE decoder causes **45.68× expansion** of curve length (4467.5% distortion). This demonstrates that:
+- The decoder transformation is highly non-linear
+- Distances in pixel space are much larger than latent space distances
+- Different regions of latent space may have different local "expansion factors"
+
+See `evaluate_vae_curve.ipynb` for visualization of latent curve and sample decoded images.
