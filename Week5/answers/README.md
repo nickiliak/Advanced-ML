@@ -13,7 +13,13 @@ Consider the curve c:[0,1]→R² defined in Eq. 17.
 
 **Answer:**
 
-<!-- Add your answer here -->
+Yes, the numerical and analytical results agree. The computed curve length is approximately **2.29**. 
+
+The implementation evaluates:
+- **Part 1 (Numerical, Eq. 4.2)**: Using finite differences, computing differences between consecutive curve points and summing distances.
+- **Part 2(b) (Analytical, Eq. 4.5)**: Using the analytical derivative norm and integrating with the trapezoidal rule.
+
+Both methods converge to the same result, confirming the accuracy of our implementation. See `evaluate_len_curve.ipynb` for the full code.
 
 
 ### Question 5.6: VAE Latent Curve Length
