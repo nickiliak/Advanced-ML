@@ -10,7 +10,13 @@ Sum, Product, and Maximum are permutation invariant — their output does not ch
 
 **Answer:**
 
-<!-- Add your answer here -->
+If we assume we only use the update function, we will eventually converge according to the power iteration algorithm to $Ah / \|Ah\|^2$, which means the vector will become the eigenvector of the matrix. Since only neighbors are non-zero in the aggregation, we can compute this via dot products.
+
+**The Convergence:**
+
+- **What:** The unique initial features ($h^{(0)}$ values) are completely lost.
+- **Why:** Repeatedly multiplying by the adjacency matrix (the AGGREGATE step) and normalizing (the UPDATE step) is the mathematical definition of Power Iteration.
+- **Result:** Every node's value converges to a measure of its **eigenvector centrality**—essentially its relative importance or connectivity within the graph. This leads to the **oversmoothing problem**: all nodes become indistinguishable as they converge to the same stationary distribution.
 
 ## Question B.2: What is the total number of parameters in the GNN?
 
