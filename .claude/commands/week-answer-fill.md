@@ -24,17 +24,20 @@ If `answer_text` is not provided, ask the user to provide it.
 
 ## Repository Convention
 - Week folder: `WeekN/`
-- Exercise PDF: exactly one `*.pdf` in `WeekN/`
+- Exercise Description (preferred): `WeekN/exercise.md` (created by week-readme-setup)
+- Exercise PDF (fallback): exactly one `*.pdf` in `WeekN/`
 - Answers folder: `WeekN/answers/` (create if missing)
 - Week README: `WeekN/answers/README.md` (create if missing)
 
 ## Procedure
 1. Normalize week and question inputs.
-2. Locate `WeekN/`, the PDF, and `WeekN/answers/README.md`.
-3. Read the PDF using `.claude/scripts/pdf_reader.py` to confirm the target question:
-   ```
-   uv run .claude/scripts/pdf_reader.py <pdf_path> <question_number>
-   ```
+2. Locate `WeekN/` and `WeekN/answers/README.md`.
+3. Check for the target question in `WeekN/exercise.md` **first** (preferred source):
+   - If `exercise.md` exists, extract the question text from it
+   - If `exercise.md` does not exist, read the PDF using `.claude/scripts/pdf_reader.py` to confirm the target question:
+     ```
+     uv run .claude/scripts/pdf_reader.py <pdf_path> <question_number>
+     ```
 4. In the README, find the heading matching the target question using this priority:
    1. Heading contains exact numeric token (`1.4`, `Q1.4`, `Question 1.4`)
    2. Heading starts with `Question` + token
@@ -51,14 +54,14 @@ If `answer_text` is not provided, ask the user to provide it.
 - Missing week folder → report and ask user to add it.
 - Missing answers folder → create `WeekN/answers/`.
 - Missing README → create `WeekN/answers/README.md` with basic structure.
-- Missing/ambiguous PDF → ask user to specify file.
+- Missing `WeekN/exercise.md` AND missing PDF → ask user to run `/week-readme-setup week N` first, or provide the question text directly.
 - No matching heading → append new section at end:
   ```markdown
   ## Question <normalized-question>
   **Answer:**
   <answer_text>
   ```
-- PDF parse failure → ask user to provide exercise text for the target question.
+- Exercise file/PDF parse failure → ask user to provide exercise text for the target question.
 
 ## Output Contract
 - State which files were used.

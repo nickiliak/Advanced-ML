@@ -23,16 +23,19 @@ If `user_answer` is missing, ask the user to provide it.
 
 ## Repository Convention
 - Week folder: `WeekN/`
-- Exactly one exercise PDF in `WeekN/`
+- Exercise Description (preferred): `WeekN/exercise.md` (created by week-readme-setup)
+- Exercise PDF (fallback): exactly one `*.pdf` in `WeekN/`
 - Week README: `WeekN/answers/README.md`
 
 ## Procedure
 1. Normalize week and question inputs.
-2. Locate the PDF in `WeekN/` and run `.claude/scripts/pdf_reader.py` to extract text:
-   ```
-   uv run .claude/scripts/pdf_reader.py <pdf_path> <question_number>
-   ```
-3. Compare `user_answer` against the question requirements and constraints from the PDF.
+2. Check for the question in `WeekN/exercise.md` **first** (preferred source):
+   - If `exercise.md` exists, extract the question text from it
+   - If `exercise.md` does not exist, locate the PDF in `WeekN/` and run `.claude/scripts/pdf_reader.py`:
+     ```
+     uv run .claude/scripts/pdf_reader.py <pdf_path> <question_number>
+     ```
+3. Compare `user_answer` against the question requirements and constraints from the exercise source.
 4. Apply conservative grading:
    - `Correct`: answer satisfies all explicit requirements and no contradictions
    - `Wrong`: required component is missing, incorrect, or contradicts constraints
@@ -62,6 +65,7 @@ Hint: <optional one-sentence directional hint; omit if Correct>
 ```
 
 ## Fallback Rules
-- Missing week folder/PDF/question → state what is missing and ask for exact reference.
+- Missing week folder → state what is missing and ask for exact reference.
+- Missing `WeekN/exercise.md` AND missing PDF → ask user to run `/week-readme-setup week N` first, or provide the question text directly.
 - Ambiguous question mapping → ask user to confirm exact question label.
-- PDF parse failure → ask user to provide the question text directly.
+- Exercise file/PDF parse failure → ask user to provide the question text directly.
