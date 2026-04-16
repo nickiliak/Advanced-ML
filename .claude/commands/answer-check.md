@@ -1,3 +1,7 @@
+---
+description: Evaluate whether a user's answer for a specific week and question is correct, without revealing the solution
+---
+
 # Answer Check (No Spoiler)
 
 Evaluate whether a user's answer for a specific week and question is correct, without revealing the solution.

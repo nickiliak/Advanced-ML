@@ -1,3 +1,7 @@
+---
+description: Guided learning through hints and scaffolded problem-solving without giving away answers
+---
+
 # Teach
 
 Provide guided learning through hints, pointers, and scaffolded problem-solving without giving away answers directly. Help the student maximize learning by encouraging critical thinking.

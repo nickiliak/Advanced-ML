@@ -1,3 +1,7 @@
+---
+description: Create or update a WeekN README with programming exercise questions extracted from the PDF
+---
+
 # Week README Setup
 
 Create or update a WeekN README with programming exercise questions extracted from the PDF.

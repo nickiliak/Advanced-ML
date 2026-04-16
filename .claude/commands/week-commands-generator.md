@@ -1,3 +1,7 @@
+---
+description: Generate and update commands for a specific week in WeekN/commands.md
+---
+
 # Week Commands Generator
 
 Generate and update commands for a specific week in `WeekN/commands.md`.
