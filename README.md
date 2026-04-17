@@ -11,7 +11,8 @@ Advanced-ML/
 ├── README.md
 ├── data/
 ├── Projects/
-│   └── Deep-Generative-Modeling/   # Submodule
+│   ├── Deep-Generative-Modeling/   # Submodule — project 1
+│   └── VAE-Geometry/               # Submodule — project 2
 ├── Week1/   # Deep Latent Variable Models (VAE)
 ├── Week2/   # Normalizing Flows
 ├── Week3/   # Diffusion Models (DDPM)
@@ -31,6 +32,26 @@ Advanced-ML/
 | 3 | Diffusion Models — DDPM implementation |
 | 5 | Manifold Learning & Latent Geometry |
 | 10 | Graph Neural Networks — Graph Classification |
+
+## Projects
+
+### Project 2: VAE Geometry (`Projects/VAE-Geometry/`)
+
+Mini-project estimating Riemannian geometries using Variational Autoencoders on a subset of MNIST (3 classes, 2048 observations).
+
+- **Part A**: Single-decoder VAE with pull-back geodesics — piecewise-linear curves minimising image-space energy via L-BFGS.
+- **Part B**: Ensemble VAE (shared encoder + K independent decoders) — Monte Carlo geodesic energy, coefficient of variation (CoV) across 10 reruns to measure geodesic reliability as a function of ensemble size K.
+
+```bash
+# Part A
+uv run python src/part_a_pullback/main.py train
+uv run python src/part_a_pullback/main.py geodesics
+
+# Part B — train K=3 decoders across 10 reruns
+for i in $(seq 0 9); do
+    uv run python src/part_b_ensemble/ensemble_train.py --num-decoders 3 --rerun-index $i
+done
+```
 
 ## Setup
 

@@ -37,28 +37,49 @@ $$5 \times (32 \times 32 + 32 \times 32 + 32) = 5 \times 2080 = \boxed{10,400 \t
 
 **Answer:**
 
-<!-- Add your answer here -->
+The DataBatch contains:
+- **edge_index [2, 3936]**: 3936 edges in edge-list format. Row 0 = source nodes, Row 1 = destination nodes. Each column is one directed edge.
+- **x [1784, 7]**: 1784 nodes total across 100 graphs, each with 7 atom-type features (one-hot encoded).
+- **edge_attr [3936, 4]**: Each edge has 4 features representing bond types (single/double/triple/aromatic).
+- **y [100]**: One binary label per graph (100 molecules).
+- **batch [1784]**: Maps each node to its graph index (0–99) for aggregation.
+- **ptr [101]**: Cumulative node pointers defining graph boundaries.
 
 ## Question C.2: Examine and run the code that defines the graph neural network SimpleGNN
 
 **Answer:**
 
-<!-- Add your answer here -->
+- **Aggregate function**: Sums all incoming messages from neighboring nodes.
+- **Update function**: Updates each node's state by adding the processed aggregated neighbor messages: `state = state + update_net[r](aggregated)`.
+- **Residual connection**: The `state = state + update_net[r](aggregated)` line is the residual connection — the original state is preserved and the aggregated neighborhood info is added on top, preventing information loss across rounds.
+- **`torch.index_add`**: `aggregated.index_add(0, edge_index[1], message[edge_index[0]])` — for each edge, takes the message from the source node (`edge_index[0]`) and adds it into the destination node's position (`edge_index[1]`) in the aggregated tensor. The same pattern is used for graph-level aggregation (summing all node states per graph).
+- **Forward function dimensions**: Inputs are `x` (num_nodes × 7), `edge_index` (2 × num_edges), `batch` (num_nodes). Output is `(num_graphs,)` — one scalar prediction per graph, produced by flattening `output_net(graph_state)` of shape `(num_graphs, 1)`.
 
 ## Question C.3: Examine and run the remaining code to fit the GNN
 
 **Answer:**
 
-<!-- Add your answer here -->
+- **Loss function**: Binary cross-entropy (`BCEWithLogitsLoss`).
+- **Optimizer**: Adam with learning rate `1e-2`.
+- **Learning rate scheduler**: `ExponentialLR` with `gamma=0.995` — multiplies the lr by 0.995 each epoch, slowly decreasing it over training so the model takes smaller steps as it converges.
+- **Accuracy**: `(out > 0) == data.y` — predicted class is positive if output > 0, compared to true label. Summed and divided by dataset length.
+- **Loss**: Computed per batch, weighted by `batch_size / dataset_length` and summed to get the epoch-level average.
+- **Overfit/Underfit**: The model overfits — training loss/accuracy improves while validation diverges.
 
 ## Question C.4: Modify the code to achieve the best possible validation loss
 
 **Answer:**
 
-<!-- Add your answer here -->
+The following modifications were made to improve validation performance:
+
+- **GRU update**: Replaced the simple residual `update_net` (Linear + ReLU) with `torch.nn.GRUCell` — the GRU gates better control how much prior state to retain vs. update each round.
+- **More message passing rounds**: Increased from 4 → 7 to capture longer-range structure in molecular graphs.
+- **Weight decay**: Added `weight_decay=1e-3` to Adam to regularize and reduce overfitting.
+- **Faster lr decay**: Changed `gamma` from 0.995 → 0.992 to decrease the learning rate more aggressively.
+- **Fewer epochs**: Reduced from 500 → 370 to stop before overfitting worsens.
 
 ## Question C.5: Save test set predictions and hand in on DTU Learn
 
 **Answer:**
 
-<!-- Add your answer here -->
+Test set predictions saved to `test_predictions.pt` using the provided code and handed in on DTU Learn.
