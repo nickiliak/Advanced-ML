@@ -9,12 +9,28 @@ Advanced-ML/
 ├── main.py
 ├── pyproject.toml
 ├── README.md
+├── data/
 ├── Projects/
 │   └── Deep-Generative-Modeling/   # Submodule
-├── Week1/
-├── Week2/
-└── Week3/
+├── Week1/   # Deep Latent Variable Models (VAE)
+├── Week2/   # Normalizing Flows
+├── Week3/   # Diffusion Models (DDPM)
+├── Week5/   # Manifold Learning & Latent Geometry
+├── Week6/
+├── Week7/
+├── Week9/
+└── Week10/  # Graph Neural Networks (GNN)
 ```
+
+## Weekly Topics
+
+| Week | Topic |
+|------|-------|
+| 1 | Deep Latent Variable Models — VAE implementation |
+| 2 | Normalizing Flows — Masked Coupling Layers |
+| 3 | Diffusion Models — DDPM implementation |
+| 5 | Manifold Learning & Latent Geometry |
+| 10 | Graph Neural Networks — Graph Classification |
 
 ## Setup
 
@@ -33,30 +49,22 @@ uv sync
 uv run python main.py
 ```
 
-## Copilot Skills
+## Claude Code Skills
 
-This repository includes two project-local Copilot skills under `.github/skills/`:
+This repository includes project-local Claude Code skills under `.claude/commands/`:
 
-- `week-answer-fill`
-	- Purpose: fill an answer into the selected week README for a specific question.
-	- Expected input style: `week 1 question 1.4` (plus the answer text to insert).
-	- Behavior: resolves `WeekN/`, reads the week exercise PDF, and appends under the matching question heading in `README.md`.
+- `week-answer-fill` — Fill an answer into the selected week README for a specific question.
+- `answer-check` — Check whether a user's answer is correct for a selected week question (no spoilers).
+- `week-readme-setup` — Create or update a WeekN README with questions from the exercise PDF.
+- `week-commands-generator` — Generate and update commands for a specific week.
+- `teach` — Guided learning through hints without revealing answers.
 
-- `answer-check-no-spoiler`
-	- Purpose: check whether a user's answer is correct/wrong for a selected week question.
-	- Expected input style: `week 1 question 1.4` + candidate answer.
-	- Behavior: evaluates against the exercise statement and replies with a verdict without revealing the full solution.
-
-### Week Folder Convention (Required)
-
-For each week, keep this structure so both skills work reliably:
+### Week Folder Convention
 
 ```text
 WeekN/
 ├── <exercise>.pdf
-└── README.md
+├── commands.md
+└── answers/
+    └── README.md
 ```
-
-Notes:
-- Keep exactly one exercise PDF in each `WeekN/` folder.
-- Use question headings in `README.md` that include the question token (for example `Question 1.4`).

@@ -22,7 +22,16 @@ If we assume we only use the update function, we will eventually converge accord
 
 **Answer:**
 
-<!-- Add your answer here -->
+For each message passing round, we need:
+- $W_{\text{self}}$: a $32 \times 32$ weight matrix = $32 \times 32 = 1024$ parameters
+- $W_{\text{neigh}}$: a $32 \times 32$ weight matrix = $32 \times 32 = 1024$ parameters  
+- $b$: a bias vector of dimension 32 = $32$ parameters
+
+Total per round: $1024 + 1024 + 32 = 2080$ parameters
+
+Since we have 5 message passing rounds with unshared weight matrices:
+
+$$5 \times (32 \times 32 + 32 \times 32 + 32) = 5 \times 2080 = \boxed{10,400 \text{ parameters}}$$
 
 ## Question C.1: Examine and run the code for loading the graph data
 
