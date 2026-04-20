@@ -29,13 +29,27 @@ From the graph structure:
 
 **Answer:**
 
-<!-- Add your answer here -->
+The final distribution is given by **p' = AD⁻¹p**, where A is the adjacency matrix, D is the diagonal degree matrix, and p is the starting distribution.
+
+Starting from uniform p = [1/7, …, 1/7] and using the same 7-node graph (nodes 0–4 and 6 have degree 3; node 5 is the hub with degree 6):
+
+For each degree-3 node j (connected to 2 degree-3 nodes and the hub):
+- p'_j = 2·(1/7)/3 + 1·(1/7)/6 = 2/21 + 1/42 = **5/42 ≈ 0.119**
+
+For the hub node (degree 6, connected to all 6 degree-3 nodes):
+- p'_hub = 6·(1/7)/3 = 6/21 = **2/7 ≈ 0.286**
+
+Verification: 6·(5/42) + 2/7 = 30/42 + 12/42 = 1 ✓
 
 ## Question B.2: Number of distinct paths of length t from node 1
 
 **Answer:**
 
-<!-- Add your answer here -->
+Represent the starting state as a one-hot vector x (1 at node 1, 0 elsewhere). Then **Aᵗ·x** gives the number of distinct paths of length t from node 1 to every other node.
+
+- A·x = column 1 of A = direct neighbors of node 1
+- A²·x = paths of length 2 from node 1
+- Aᵗ·x = paths of length t from node 1 (entry j = number of length-t paths from node 1 to node j)
 
 ## Question C.1: Show 1 − σ(x) = σ(−x) and spot the typo in eq. 3.12
 
