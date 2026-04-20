@@ -4,13 +4,26 @@
 
 **Answer:**
 
-<!-- Add your answer here -->
+Eigenvector centrality for each node is given by the components of the principal eigenvector (corresponding to the largest eigenvalue λ₁ = 3.646).
+
+By examining the adjacency matrix, all nodes have degree 3 except node 6 (0-indexed) which has degree 6 — identifying it as the central hub. The remaining nodes are symmetric and must share the same centrality.
+
+The centralities are read directly from the first column of the eigenvector matrix E. Since eigenvectors are not unique in sign and centralities must be positive, we flip the sign of the (all-negative) principal eigenvector:
+
+- **Nodes 0–4 and 6** (degree-3 nodes): centrality ≈ **0.339**
+- **Node 5** (degree-6 hub): centrality ≈ **0.558**
 
 ## Question A.2: Clustering coefficient for each node
 
 **Answer:**
 
-<!-- Add your answer here -->
+Local clustering coefficient: Cᵢ = 2Lᵢ / (kᵢ(kᵢ − 1)), where kᵢ = degree, Lᵢ = edges among neighbors.
+
+From the graph structure:
+- **Nodes 0–4 and 6** (degree-3 nodes): each node's 3 neighbors form a triangle (fully connected), so Lᵢ = 3.  
+  Cᵢ = 2·3 / (3·2) = **1**
+- **Node 5** (hub, degree 6): 6 neighbors split into two fully-connected triplets, so L₅ = 3 + 3 = 6.  
+  C₅ = 2·6 / (6·5) = 12/30 = **0.4**
 
 ## Question B.1: Final node probability distribution after one random walk step
 

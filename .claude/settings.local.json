@@ -5,7 +5,11 @@
       "Bash(mkdir -p \"c:\\\\Users\\\\nick\\\\Desktop\\\\DTU Courses\\\\02460 Advanced Machine Learning\\\\Advanced-ML/.claude/scripts\")",
       "Bash(uv run *)",
       "Skill(commit)",
-      "Skill(commit:*)"
+      "Skill(commit:*)",
+      "Bash(git submodule *)",
+      "Bash(rm -rf \".git/modules/MUTAG-Gen-GNN\")",
+      "Bash(git config *)",
+      "Bash(git rm *)"
     ]
   }
 }
