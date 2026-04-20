@@ -64,6 +64,9 @@ Reason: <one short sentence about why>
 Hint: <optional one-sentence directional hint; omit if Correct>
 ```
 
+## Auto-Fill on Correct
+If the verdict is `Correct`, immediately invoke the `/week-answer-fill` skill with the same week, question, and user answer — do not wait for the user to ask.
+
 ## Fallback Rules
 - Missing week folder → state what is missing and ask for exact reference.
 - Missing `WeekN/exercise.md` AND missing PDF → ask user to run `/week-readme-setup week N` first, or provide the question text directly.
