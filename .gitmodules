@@ -7,3 +7,6 @@
 [submodule "Projects/VAE-Geometry"]
 	path = Projects/VAE-Geometry
 	url = https://github.com/nickiliak/VAE-Geometry.git
+[submodule "Projects/MUTAG-Gen-GNN"]
+	path = Projects/MUTAG-Gen-GNN
+	url = https://github.com/nickiliak/MUTAG-Gen-GNN.git
