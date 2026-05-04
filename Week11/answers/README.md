@@ -3,18 +3,51 @@
 ## Question A.1: Impulse response output
 
 **Answer:**
-The output is the filter itself, i.e. y[n] = h[n]. With impulse x[n]=δ[n], applying y = Σ_k h[k] D^k x shifts the impulse by k at each term, so y[n] = Σ_k h[k] δ[n-k] = h[n] (impulse response equals filter).
+With the impulse $x[n] = \delta[n]$ and the graph convolution
+
+$$y[n] = \left( \sum_{k} h[k]\, D^k \right) x[n],$$
+
+the shift acts as $D^k \delta[n] = \delta[n-k]$, so
+
+$$y[n] = \sum_{k} h[k]\, \delta[n-k] = h[n].$$
+
+The output equals the filter itself — the impulse response *is* $h[n]$.
 
 ## Question A.2: Causal filter convolution derivation
 
 **Answer:**
-From the definition y[n] = Σ_{k=-∞}^{∞} x[k]h[n−k], rewrite by substituting k → n−k to get y[n] = Σ_k x[n−k]h[k]. Causal filter means h[k] = 0 for k < 0, so the sum reduces to y[n] = Σ_{k=0}^{∞} h[k] x[n−k] = h[0]x[n] + h[1]x[n−1] + h[2]x[n−2] + .... Using the unit-delay operator Dx[n] = x[n−1] (so D^k x[n] = x[n−k]), this becomes y[n] = h[0]x[n] + h[1]Dx[n] + h[2]D²x[n] + ... = (Σ_{k=0}^{∞} h[k] D^k) x[n].
+Start from
+
+$$y[n] = \sum_{k=-\infty}^{\infty} x[k]\, h[n-k].$$
+
+Substitute $k \to n-k$:
+
+$$y[n] = \sum_{k=-\infty}^{\infty} h[k]\, x[n-k].$$
+
+Causality means $h[k] = 0$ for $k < 0$, so
+
+$$y[n] = \sum_{k=0}^{\infty} h[k]\, x[n-k] = h[0]\,x[n] + h[1]\,x[n-1] + h[2]\,x[n-2] + \dots$$
+
+Using the unit-delay operator $D x[n] = x[n-1]$, so $D^k x[n] = x[n-k]$:
+
+$$y[n] = h[0]\,x[n] + h[1]\,D x[n] + h[2]\,D^2 x[n] + \dots = \left( \sum_{k=0}^{\infty} h[k]\, D^k \right) x[n].$$
 
 ## Question A.3: Constant signal graph convolution
 
 **Answer:**
+Since $h[n]$ is nonzero only for $0 \le n \le N$ (causal, finite support), by A.2:
 
-<!-- Add your answer here -->
+$$y[n] = \sum_{k=0}^{N} h[k]\, D^k x[n].$$
+
+The shift acts as $D x[n] = x[n-1]$, so for a constant signal $x[n] = x$ we have $D^k x[n] = x$ for all $k$. Therefore
+
+$$y[n] = \left( \sum_{k=0}^{N} h[k] \right) x,$$
+
+a constant independent of $n$. Comparing to Eq. 7.21,
+
+$$\mathbf{Q}_h \mathbf{x} = \alpha_0 \mathbf{I}\mathbf{x} + \alpha_1 \mathbf{A}\mathbf{x} + \dots + \alpha_N \mathbf{A}^N \mathbf{x},$$
+
+the chain-graph causal-filter form has the same structure as the general-graph spatial filter, with $h[k]$ playing the role of $\alpha_k$ and $D = \mathbf{A}$.
 
 ## Question B.1: u_k as eigenvector of cycle graph adjacency matrix
 
