@@ -1,5 +1,9 @@
 # Week 9 Answers: Graphs and Node Embeddings
 
+Source questions: [Week9/exercise.md](../exercise.md)
+
+## Theoretical Exercises
+
 ## Question A.1: Eigenvector centrality for each node
 
 **Answer:**
@@ -84,6 +88,8 @@ With z_u ⊥ z_v we have z_u^⊤ z_v = 0, and with bias b = 0 the sigmoid argume
 P_{u,v} = σ(0) = 1 / (1 + e^0) = 1/2 = **0.5**
 
 — the model assigns a 50/50 (coin-flip) probability to the edge, i.e. maximal uncertainty.
+
+## Programming Exercises
 
 ## Question D.1: Examine and run graph data loading code
 

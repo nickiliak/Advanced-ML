@@ -1,4 +1,37 @@
-# Week 3 Programming Exercises
+# Week 3 - Diffusion Models (DDPM)
+
+Source questions: [Week3/exercise.md](../exercise.md)
+
+## Theoretical Exercises
+
+## Question 3.1: $q(z_T \mid x) \to \mathcal{N}(0, I)$ as $T \to \infty$
+
+For any noise schedule $0 < \beta_1 < \dots < \beta_T < 1$, show that $q(z_T \mid x)$ approaches a standard Gaussian.
+
+**Answer:**
+
+<!-- Add your answer here -->
+
+
+## Question 3.2: Derive Ho et al. (2020) eq. 5 from eq. 3
+
+Reproduce Appendix A of Ho et al. (2020) — explain every step from equations (17) through (22).
+
+**Answer:**
+
+<!-- Add your answer here -->
+
+
+## Question 3.3: Closed-form $L_{t-1} = \tfrac{1}{2\sigma_t^2}\|\tilde\mu - \mu_\theta\|^2 + C$
+
+Apply the multivariate-Gaussian KL formula to $L_{t-1} = \mathrm{KL}(q(z_{t-1} \mid z_t, x)\,\|\,p(z_{t-1}\mid z_t))$.
+
+**Answer:**
+
+<!-- Add your answer here -->
+
+
+## Programming Exercises
 
 ## Question 3.4: Complete the DDPM implementation
 

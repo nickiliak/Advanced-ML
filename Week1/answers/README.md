@@ -1,8 +1,43 @@
 # Week 1 - Deep Latent Variable Models
 
+Source questions: [Week1/exercise.md](../exercise.md)
+
+## Theoretical Exercises
+
+## Question 1.1: PPCA — ML estimate of $b$ is the data mean
+
+Show that for the PPCA model $p(y\mid x) = \mathcal{N}(y \mid Wx + b, \sigma^2 I)$, the ML estimate is $\hat b = \bar x$.
+
+1. Write the log-likelihood $\ell(\sigma^2, b, W) = \sum_n \ln p(x_n \mid \sigma^2, b, W)$.
+2. Set $\partial \ell / \partial b = 0$ and solve.
+
+**Answer:**
+
+<!-- Add your answer here -->
+
+
+## Question 1.2: KL form of ELBO + closed-form Gaussian KL
+
+1. Show that $\mathbb{E}_{q_\phi(z\mid x)}[\ln q_\phi(z\mid x) - \ln p(z)] = \mathrm{KL}[q_\phi(z\mid x) \| p(z)]$.
+2. Derive the closed-form $\mathrm{KL}[\mathcal{N}(\mu_1,\sigma_1^2) \| \mathcal{N}(\mu_2,\sigma_2^2)] = \ln(\sigma_2/\sigma_1) + (\sigma_1^2 + (\mu_1-\mu_2)^2)/(2\sigma_2^2) - 1/2$.
+
+**Answer:**
+
+<!-- Add your answer here -->
+
+
+## Question 1.3: Two-level hierarchical VAE — ELBO derivation
+
+Derive the two-level ELBO from $\ln p(x) = \ln \iint p(x\mid z_1) p(z_1\mid z_2) p(z_2)\,dz_1\,dz_2$, then reorganise the expectations to reach equation (5.82) of Tomczak (2024).
+
+**Answer:**
+
+<!-- Add your answer here -->
+
+
 ## Programming Exercises
 
-### Question 1.4: VAE Implementation Inspection
+## Question 1.4: VAE Implementation Inspection
 
 Inspect the code in vae_bernoulli.py and answer the following questions:
 - How is the reparametrisation trick handled in the code?
@@ -25,7 +60,7 @@ Both terms return a vector with one value per sample, not per pixel, because the
 The function `torch.chunk` in `GaussianEncoder.forward` splits the output of the encoder network into two tensors along the last dimension: one for the mean and one for the standard deviation of the Gaussian distribution. This is necessary because the encoder network outputs both parameters concatenated together, and they need to be separated to define the Gaussian distribution for the latent variables.
 
 
-### Question 1.5: VAE with Bernoulli Output - Extensions
+## Question 1.5: VAE with Bernoulli Output - Extensions
 
 Add the following functionality to the implementation (vae_bernoulli.py) of the VAE with Bernoulli output distributions:
 - Evaluate the ELBO on the binarised MNIST test set.
@@ -41,7 +76,7 @@ Add the following functionality to the implementation (vae_bernoulli.py) of the 
 - This visualization shows how the VAE's latent space clusters according to digit class, and how PCA is used for higher-dimensional latent spaces.
 
 
-### Question 1.6: VAE with Mixture of Gaussian Prior
+## Question 1.6: VAE with Mixture of Gaussian Prior
 
 Extend the VAE with Bernoulli output distributions (vae_bernoulli.py) to use a mixture of Gaussian prior (MoG). For your implementation:
 - Evaluate the test set ELBO. Do you see better performance?
@@ -72,7 +107,7 @@ Mixture of Gaussians Prior:
 The MoG prior provides both quantitative improvement (higher ELBO) and qualitative improvement (better clustering).
 
 
-### Question 1.7: VAE with Continuous Output Distributions
+## Question 1.7: VAE with Continuous Output Distributions
 
 Consider the pixel values in MNIST as continuous and experiment with different output distributions. Implement a multivariate Gaussian output distribution. You should experiment with learning the variance of each pixel and having a fixed variance for all pixels:
 - How is the qualitative sample quality?
@@ -109,7 +144,7 @@ Mean Samples (mean of p(x|z)):
 As shown in the figures above, the mean samples are dramatically cleaner and sharper with well-defined digit structures, while the noisy samples exhibit significant grain and pixelated artifacts from the stochastic sampling.
 
 
-### Question 1.8: VAE with CNN-Based Architecture (Optional)
+## Question 1.8: VAE with CNN-Based Architecture (Optional)
 
 Extend the VAE with Bernoulli output distributions (vae_bernoulli.py) to use a CNN-based encoder and decoder. For your new implementation:
 - When sampling from a trained model, do you see a qualitative improvement in sample quality?

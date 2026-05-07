@@ -1,8 +1,60 @@
 # Week 5 - Manifold Learning & Latent Geometry
 
+Source questions: [Week5/exercise.md](../exercise.md)
+
+## Theoretical Exercises
+
+## Question 5.1: PPCA — rotational equivalence preserves distances and angles
+
+For $\hat x = R x$, $\hat A = A R^\top$ with $R$ a rotation matrix:
+
+1. Show $\|x_i - x_j\| = \|\hat x_i - \hat x_j\|$.
+2. Show $\angle(x_i - x_j,\, x_k - x_j) = \angle(\hat x_i - \hat x_j,\, \hat x_k - \hat x_j)$.
+
+**Answer:**
+
+<!-- Add your answer here -->
+
+
+## Question 5.2: Generative model — Jacobian and manifold properties
+
+For $f(x_1, x_2) = (2x_1^2 + x_2^2,\, x_1,\, x_2)^\top$:
+
+1. Derive the Jacobian.
+2. Show the model spans an *immersed* manifold.
+3. Show the model spans an *embedded* manifold.
+
+**Answer:**
+
+<!-- Add your answer here -->
+
+
+## Question 5.3: Curve $c(t) = (2t + 1,\, -t^2)^\top$ — speed and length
+
+1. Derive $t \mapsto \|\dot c_t\|$.
+2. Compute the Euclidean length of the curve. *Hint:* $\int \sqrt{1+t^2}\,dt = \tfrac{1}{2}(\sqrt{1+t^2}\,t + \sinh^{-1}(t)) + C$.
+
+**Answer:**
+
+<!-- Add your answer here -->
+
+
+## Question 5.4: Unit-sphere parametrization — pullback metric and positive definiteness
+
+For $f(x_1, x_2) = (\sin x_1 \cos x_2,\, \sin x_1 \sin x_2,\, \cos x_1)^\top$:
+
+1. Derive the Jacobian.
+2. Derive the metric via Eq. 5.21 (LMLG).
+3. Show the metric is positive definite.
+
+**Answer:**
+
+<!-- Add your answer here -->
+
+
 ## Programming Exercises
 
-### Question 5.5: Curve Length Evaluation
+## Question 5.5: Curve Length Evaluation
 
 Consider the curve c:[0,1]→R² defined in Eq. 17.
 
@@ -22,7 +74,7 @@ The implementation evaluates:
 Both methods converge to the same result, confirming the accuracy of our implementation. See `evaluate_len_curve.ipynb` for the full code.
 
 
-### Question 5.6: VAE Latent Curve Length
+## Question 5.6: VAE Latent Curve Length
 
 Consider the Bernoulli VAE that you worked on in Week 1. Train this with a two-dimensional latent space (for ease of plotting).
 

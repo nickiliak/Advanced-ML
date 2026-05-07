@@ -1,5 +1,9 @@
 # Week 10 – Exercise 2: Graph Neural Networks
 
+Source questions: [Week10/exercise.md](../exercise.md)
+
+## Theoretical Exercises
+
 ## Question A.1: Which of the following functions are permutation invariant?
 
 **Answer:**
@@ -32,6 +36,8 @@ Total per round: $1024 + 1024 + 32 = 2080$ parameters
 Since we have 5 message passing rounds with unshared weight matrices:
 
 $$5 \times (32 \times 32 + 32 \times 32 + 32) = 5 \times 2080 = \boxed{10,400 \text{ parameters}}$$
+
+## Programming Exercises
 
 ## Question C.1: Examine and run the code for loading the graph data
 

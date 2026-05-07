@@ -1,5 +1,9 @@
 # Week 11 Answers: Graph Convolutions & Spectral Methods
 
+Source questions: [Week11/exercise.md](../exercise.md)
+
+## Theoretical Exercises
+
 ## Question A.1: Impulse response output
 
 **Answer:**
@@ -81,6 +85,8 @@ so $u_k$ is an eigenvector of the cycle adjacency matrix with eigenvalue $\lambd
 **Answer:**
 
 <!-- Add your answer here -->
+
+## Programming Exercises
 
 ## Question C.1: Examine and run the script
 

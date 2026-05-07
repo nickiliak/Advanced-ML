@@ -1,44 +1,79 @@
 # Week 10 – Exercise 2: Graph Neural Networks
 
-## Exercise C: Programming Exercise
+Source: `02460_week10_exercises.pdf` (Advanced Machine Learning — Module 3, Exercise 2)
 
-In this exercise you will work with a graph neural network for graph-level classification implemented in the script `gnn_graph_classification.py`.
+## Theoretical Exercises
 
-We will use the MUTAG dataset introduced by Debnath et al.: a collection of nitroaromatic compounds (molecular graphs) and the task is to predict their mutagenicity on Salmonella typhimurium (graph-level binary classification). Vertices represent atoms and edges represent bonds, and the 7 discrete node labels represent the atom type (one-hot encoded). There are a total of 188 graphs in the dataset.
+### Exercise A: Invariant Aggregation Functions
 
-## Question C.1: Examine and run the code for loading the graph data
+In a graph neural network, when aggregating information from neighbors or when aggregating from all nodes for a graph-level prediction, the aggregation function must not depend on the order of the inputs.
 
-- Extract a single batch from the training loader using `data_batch = next(iter(train_loader))`.
-- The variable `data_batch` will then contain the following important variables which you should examine to make sure you understand:
-  - `data_batch.x`: Node features
-  - `data_batch.edge_index`: Edges
-  - `data_batch.batch`: Index of which graph in the batch each node belongs to.
+**Question A.1:** Which of the following functions on $(x_1, x_2, \dots, x_N)$ are permutation invariant?
 
-## Question C.2: Examine and run the code that defines the graph neural network SimpleGNN
+1. **Sum:** $g\!\left(\sum_{n=1}^N f(x_n)\right) = g(f(x_1) + f(x_2) + \dots + f(x_N))$
+2. **Product:** $g\!\left(\prod_{n=1}^N f(x_n)\right) = g(f(x_1) \cdot f(x_2) \cdots f(x_N))$
+3. **Maximum:** $g\!\left(\max_{n=1}^N f(x_n)\right) = g(\max(f(x_1), f(x_2), \dots, f(x_N)))$
+4. **Concatenation:** $g\!\left(\bigsqcup_{n=1}^N f(x_n)\right) = g([f(x_1), f(x_2), \dots, f(x_N)])$
 
-- Based on the components defined in the `__init__` function and the computations carried out in the `forward` function, sketch a diagram of the graph neural network architecture.
-- What are the **aggregate** and **update** functions that are implemented?
+for arbitrary $f(\cdot)$ and $g(\cdot)$.
+
+---
+
+### Exercise B: Simple Graph Neural Networks
+
+Consider a GNN defined as
+
+$$\textbf{aggregate:}\quad m_{N(u)}^{(k)} = \sum_{v \in N(u)} h_v^{(k)}$$
+
+$$\textbf{update:}\quad h_u^{(k+1)} = \frac{m_{N(u)}^{(k)}}{\sqrt{\sum_{v \in V} (m_{N(v)}^{(k)})^2}}$$
+
+where node representations are scalar and initialized randomly.
+
+**Question B.1:** Assuming a large number of update rounds is computed, what will the node representations converge to?
+
+*Hint:* Consider the basic GNN, where each round is
+
+$$h_u^{(k)} = \sigma\!\left(W_{\text{self}}^{(k)} h_u^{(k-1)} + W_{\text{neigh}}^{(k)} \sum_{v \in N(u)} h_v^{(k-1)} + b^{(k)}\right).$$
+
+**Question B.2:** If $|V| = 10$, the node-representation dimension is $D = 32$ (i.e. $h_u^{(k)} \in \mathbb{R}^{32}$), the GNN performs $5$ message-passing rounds, and weight matrices are not shared between rounds, what is the total number of parameters?
+
+## Programming Exercises
+
+### Exercise C: Programming Exercise
+
+In this exercise you will work with a graph neural network for graph-level classification implemented in `gnn_graph_classification.py`.
+
+We will use the MUTAG dataset (Debnath et al.): a collection of nitroaromatic compounds (molecular graphs); the task is graph-level binary classification (mutagenicity on Salmonella typhimurium). Vertices are atoms, edges are bonds, and 7 discrete node labels are atom types (one-hot). 188 graphs total.
+
+**Question C.1:** Examine and run the code for loading the graph data.
+
+- Extract a single batch via `data_batch = next(iter(train_loader))`.
+- Examine these variables:
+  - `data_batch.x` — node features
+  - `data_batch.edge_index` — edges
+  - `data_batch.batch` — index of which graph in the batch each node belongs to
+
+**Question C.2:** Examine and run the code that defines the graph neural network `SimpleGNN`.
+
+- Based on the `__init__` and `forward` functions, sketch the GNN architecture.
+- What are the **aggregate** and **update** functions implemented?
 - Where and how are residual connections used?
-- The messages are aggregated using a sum. To do this, the code uses the function `torch.index_add`. Make sure you understand this function, and look up its documentation if necessary. The same function is used to compute the graph-level aggregation.
-- What are the dimensions and purpose of the inputs and the output of the `forward` function?
+- The messages are aggregated using a sum via `torch.index_add`. Make sure you understand this function. The same function is used for graph-level aggregation.
+- What are the dimensions and purpose of the inputs and the output of `forward`?
 
-## Question C.3: Examine and run the remaining code to fit the GNN
+**Question C.3:** Examine and run the remaining code to fit the GNN. Make sure you understand:
 
-Make sure you understand the following:
 - Which loss function, optimizer, and learning rate are used?
 - What does the learning rate scheduler do?
 - How is the training/validation loss and accuracy computed?
 
-After having fitted the GNN, examine the two generated plots. Does the model seem to overfit or underfit?
+After fitting, examine the two generated plots — does the model overfit or underfit?
 
-## Question C.4: Modify the code to achieve the best possible validation loss
+**Question C.4:** Modify the code to achieve the best possible validation loss. Do not change the training/validation split, and do not look at the test set. Consider:
 
-Do not change the training/validation split, and do not look at the test set. You might consider the following modifications:
-- Change the model hyperparameters (the state dimension and number of message passing rounds)
-- Change optimizer hyperparameters (learning rate schedule and number of epochs).
-- Regularize by adding weight decay or dropout layers.
-- Change the model architecture, for example by introducing a GRU update.
+- Model hyperparameters (state dimension, number of message-passing rounds).
+- Optimizer hyperparameters (lr schedule, number of epochs).
+- Regularization (weight decay or dropout).
+- Architecture changes (e.g. GRU update).
 
-## Question C.5: Save test set predictions and hand in on DTU Learn
-
-Using the provided code, save your test set predictions in a file `test_predictions.pt`, and hand it in on DTU Learn. The lowest test loss will be honored as the class winner.
+**Question C.5:** Save your test set predictions in `test_predictions.pt` and hand it in on DTU Learn. The lowest test loss will be honored as the class winner.
