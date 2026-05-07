@@ -52,8 +52,23 @@ the chain-graph causal-filter form has the same structure as the general-graph s
 ## Question B.1: u_k as eigenvector of cycle graph adjacency matrix
 
 **Answer:**
+On the cycle graph $C_N$, each node $n$ has exactly two neighbors, $n-1$ and $n+1$ (mod $N$), so the adjacency action at node $n$ reads off only those two entries:
 
-<!-- Add your answer here -->
+$$(A u_k)_n = (u_k)_{n-1} + (u_k)_{n+1}.$$
+
+Substitute the given form $(u_k)_n = e^{-i 2\pi k n / N}$:
+
+$$(A u_k)_n = e^{-i 2\pi k (n-1) / N} + e^{-i 2\pi k (n+1) / N}.$$
+
+Factor out $(u_k)_n = e^{-i 2\pi k n / N}$. Pulling $-n$ out of $-(n-1)$ leaves $+1$ in the exponent, and out of $-(n+1)$ leaves $-1$:
+
+$$(A u_k)_n = (u_k)_n \left( e^{+i 2\pi k / N} + e^{-i 2\pi k / N} \right) = (u_k)_n \cdot 2\cos\!\left(\frac{2\pi k}{N}\right).$$
+
+Therefore $A u_k = \lambda_k u_k$ holds for every $n$ with the same scalar
+
+$$\lambda_k = 2\cos\!\left(\frac{2\pi k}{N}\right),$$
+
+so $u_k$ is an eigenvector of the cycle adjacency matrix with eigenvalue $\lambda_k$.
 
 ## Question B.2: Spectral domain graph convolution derivation
 
