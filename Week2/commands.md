@@ -2,12 +2,12 @@
 
 ## Train
 ```bash
-uv run Week2/flow.py train --epochs 100 --batch-size 10000 --lr 1e-3 --data tg --model Week2/ckpts/flow_model.pt --device cpu
+uv run Week2/scripts/flow.py train --epochs 100 --batch-size 10000 --lr 1e-3 --data tg --model Week2/ckpts/flow_model.pt --device cpu
 ```
 
 ## Sample
 ```bash
-uv run Week2/flow.py sample --model Week2/ckpts/flow_model.pt --samples Week2/samples/flow_samples.png --data tg --device cpu
+uv run Week2/scripts/flow.py sample --model Week2/ckpts/flow_model.pt --samples Week2/samples/flow_samples.png --data tg --device cpu
 ```
 
 ## Parameters

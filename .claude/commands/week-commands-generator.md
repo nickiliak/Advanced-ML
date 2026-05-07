@@ -20,20 +20,21 @@ Extract first integer from week input → `Week<N>`.
 
 ## Repository Convention
 - Week folder: `WeekN/`
-- Main Python script: `WeekN/<script_name>.py`
+- Scripts folder: `WeekN/scripts/`
+- Main Python script: `WeekN/scripts/<script_name>.py`
 - Commands file: `WeekN/commands.md` (not root `commands.md`)
 - Output directories: `WeekN/ckpts/`, `WeekN/samples/`, `WeekN/outputs/`
 - All commands assume execution from project root using relative paths
 
 ## Procedure
 1. Normalize week input.
-2. Locate `WeekN/` and identify the main Python script.
+2. Locate `WeekN/scripts/` and identify the main Python script (create the folder if it doesn't exist; if a `*.py` lives directly in `WeekN/`, move it under `WeekN/scripts/` before generating commands).
 3. Inspect the script's argument parser to extract:
    - Available modes (e.g., `train`, `sample`)
    - Default parameters and their descriptions
 4. Create or update `WeekN/commands.md` with:
    - Concise command examples (1–2 per mode)
-   - Commands formatted as: `uv run WeekN/script.py [mode] [parameters]`
+   - Commands formatted as: `uv run WeekN/scripts/script.py [mode] [parameters]`
    - Paths using `WeekN/ckpts/`, `WeekN/samples/`, `WeekN/outputs/`
    - An "Outputs" section documenting where files are saved
    - A lean parameters table
@@ -44,7 +45,7 @@ Extract first integer from week input → `Week<N>`.
 
 ## [Mode Name]
 \`\`\`bash
-uv run WeekN/script.py [mode] [parameters]
+uv run WeekN/scripts/script.py [mode] [parameters]
 \`\`\`
 
 ## Outputs

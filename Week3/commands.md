@@ -5,19 +5,19 @@
 ### Toy Datasets
 ```bash
 # Two Gaussians
-uv run Week3/ddpm.py train --data tg --epochs 1 --batch-size 10000 --lr 1e-3 --device cpu --model Week3/ckpts/model.pt
+uv run Week3/scripts/ddpm.py train --data tg --epochs 1 --batch-size 10000 --lr 1e-3 --device cpu --model Week3/ckpts/model.pt
 
 # Chequerboard
-uv run Week3/ddpm.py train --data cb --epochs 1 --batch-size 10000 --lr 1e-3 --device cpu --model Week3/ckpts/model_cb.pt
+uv run Week3/scripts/ddpm.py train --data cb --epochs 1 --batch-size 10000 --lr 1e-3 --device cpu --model Week3/ckpts/model_cb.pt
 ```
 
 ### MNIST
 ```bash
 # MNIST with Fully Connected Network
-uv run Week3/ddpm.py train --data mnist --network fc --epochs 1 --batch-size 128 --lr 1e-3 --device cpu --model Week3/ckpts/model_mnist_fc.pt
+uv run Week3/scripts/ddpm.py train --data mnist --network fc --epochs 1 --batch-size 128 --lr 1e-3 --device cpu --model Week3/ckpts/model_mnist_fc.pt
 
 # MNIST with U-Net
-uv run Week3/ddpm.py train --data mnist --network unet --epochs 1 --batch-size 128 --lr 1e-3 --device cpu --model Week3/ckpts/model_mnist_unet.pt
+uv run Week3/scripts/ddpm.py train --data mnist --network unet --epochs 1 --batch-size 128 --lr 1e-3 --device cpu --model Week3/ckpts/model_mnist_unet.pt
 ```
 
 ## Sample
@@ -25,19 +25,19 @@ uv run Week3/ddpm.py train --data mnist --network unet --epochs 1 --batch-size 1
 ### Toy Datasets
 ```bash
 # Two Gaussians
-uv run Week3/ddpm.py sample --data tg --model Week3/ckpts/model.pt --samples Week3/samples/samples.png --device cpu
+uv run Week3/scripts/ddpm.py sample --data tg --model Week3/ckpts/model.pt --samples Week3/samples/samples.png --device cpu
 
 # Chequerboard
-uv run Week3/ddpm.py sample --data cb --model Week3/ckpts/model_cb.pt --samples Week3/samples/samples_cb.png --device cpu
+uv run Week3/scripts/ddpm.py sample --data cb --model Week3/ckpts/model_cb.pt --samples Week3/samples/samples_cb.png --device cpu
 ```
 
 ### MNIST
 ```bash
 # MNIST with Fully Connected Network
-uv run Week3/ddpm.py sample --data mnist --network fc --model Week3/ckpts/model_mnist_fc.pt --samples Week3/samples/samples_mnist_fc.png --device cpu
+uv run Week3/scripts/ddpm.py sample --data mnist --network fc --model Week3/ckpts/model_mnist_fc.pt --samples Week3/samples/samples_mnist_fc.png --device cpu
 
 # MNIST with U-Net
-uv run Week3/ddpm.py sample --data mnist --network unet --model Week3/ckpts/model_mnist_unet.pt --samples Week3/samples/samples_mnist_unet.png --device cpu
+uv run Week3/scripts/ddpm.py sample --data mnist --network unet --model Week3/ckpts/model_mnist_unet.pt --samples Week3/samples/samples_mnist_unet.png --device cpu
 ```
 
 ## Outputs

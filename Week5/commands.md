@@ -5,7 +5,7 @@
 This command trains a VAE with 2D latent dimension for use in Exercise 5.6:
 
 ```bash
-uv run Week1/vae.py train normal --dataset binary --decoder bernoulli --device cpu --latent-dim 2 --epochs 10 --batch-size 128 --model Week5/ckpts/model_2d.pt
+uv run Week1/scripts/vae.py train normal --dataset binary --decoder bernoulli --device cpu --latent-dim 2 --epochs 10 --batch-size 128 --model Week5/ckpts/model_2d.pt
 ```
 
 ## Outputs

@@ -2,27 +2,27 @@
 
 ## Training with Gaussian Prior (Binary MNIST + Bernoulli Decoder)
 ```bash
-uv run Week1/vae.py train normal --dataset binary --decoder bernoulli --device cpu --latent-dim 10 --epochs 5 --batch-size 128 --model Week1/ckpts/model.pt
+uv run Week1/scripts/vae.py train normal --dataset binary --decoder bernoulli --device cpu --latent-dim 10 --epochs 5 --batch-size 128 --model Week1/ckpts/model.pt
 ```
 
 ## Training with Gaussian Prior (Continuous MNIST + Multivariate Gaussian Decoder)
 ```bash
-uv run Week1/vae.py train normal --dataset continuous --decoder gaussian --device cpu --latent-dim 10 --epochs 5 --batch-size 128 --model Week1/ckpts/model_gaussian.pt
+uv run Week1/scripts/vae.py train normal --dataset continuous --decoder gaussian --device cpu --latent-dim 10 --epochs 5 --batch-size 128 --model Week1/ckpts/model_gaussian.pt
 ```
 
 ## Training with Mixture of Gaussians Prior
 ```bash
-uv run Week1/vae.py train mixture --dataset binary --decoder bernoulli --device cpu --latent-dim 10 --epochs 5 --batch-size 128 --model Week1/ckpts/model_mog.pt
+uv run Week1/scripts/vae.py train mixture --dataset binary --decoder bernoulli --device cpu --latent-dim 10 --epochs 5 --batch-size 128 --model Week1/ckpts/model_mog.pt
 ```
 
 ## Sampling
 ```bash
-uv run Week1/vae.py sample normal --dataset binary --decoder bernoulli --device cpu --latent-dim 10 --model Week1/ckpts/model.pt --samples Week1/samples/samples.png
+uv run Week1/scripts/vae.py sample normal --dataset binary --decoder bernoulli --device cpu --latent-dim 10 --model Week1/ckpts/model.pt --samples Week1/samples/samples.png
 ```
 
 ## Evaluation
 ```bash
-uv run Week1/vae.py eval normal --dataset binary --decoder bernoulli --device cpu --latent-dim 10 --model Week1/ckpts/model.pt
+uv run Week1/scripts/vae.py eval normal --dataset binary --decoder bernoulli --device cpu --latent-dim 10 --model Week1/ckpts/model.pt
 ```
 
 ## Parameters
