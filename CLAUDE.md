@@ -16,8 +16,22 @@ This project uses **`uv`** for Python environment and package management.
 
 This repo is the user's study lab for the **02460 final exam**. The exam is written and **paper notes are allowed** — the end goal is a dense, hand-carryable cheatsheet covering every weekly topic.
 
-- Cheatsheet drafts live under [ExamPrep/prep/](ExamPrep/prep/) (one section per topic, formula-first, minimal prose).
-- Source material for the cheatsheet: weekly lecture PDFs, `WeekN/answers/README.md`, project READMEs in [Projects/](Projects/).
+The pipeline has two stages with **different length budgets**:
+
+1. **Per-week study notes** — length-unconstrained. Live under [ExamPrep/prep/](ExamPrep/prep/), one folder per week, three files each:
+
+   ```
+   ExamPrep/prep/WeekN/
+   ├── lecture.md     # lecture highlights, key formulas, derivations from slides
+   ├── exercises.md   # worked exercise theory, patterns, cross-week links
+   └── stuck.md       # confusions, mistakes, repeated wrong turns — drilling targets
+   ```
+
+   Folders are created lazily — only when notes work begins for that week. The `/learn` skill auto-proposes lines for `stuck.md` (user approves before write); `lecture.md` and `exercises.md` grow only through user-led editing.
+
+2. **Final cheatsheet** — **hard limit: 3 pages max.** This is what the user will physically bring to the timed (2h) exam. Built from the per-week notes by condensing aggressively. Formula-first, minimal prose, no redundancy across sections. Cheatsheet generator design is deferred until enough weekly notes exist to know what's needed.
+
+Source material for both stages: weekly lecture PDFs, `WeekN/answers/README.md`, project READMEs in [Projects/](Projects/).
 
 ## Old Exams Policy — validation set
 
@@ -49,7 +63,13 @@ If unsure whether something counts as leakage, ask before producing.
 
 ## Solving Mode
 
-The user solves exercises on their own merit. A dedicated study agent will be set up later to handle hint-vs-answer logic. **Until then**: when the user asks about an *unsolved* exercise, ask whether they want hints (`/teach` style) or a full solution before answering. `/answer-check` is always safe — it grades without spoilers.
+The user solves exercises on their own merit. Three modes available, pick by user intent:
+
+- `/learn week N question X.Y` — **Socratic loop**. Multi-turn scaffolding with per-step verdicts. Never reveals the answer, even if asked. Auto-proposes `stuck.md` entries on `Wrong` verdicts (user approves). Use this for **unsolved** exercises by default.
+- `/teach <free text>` — free-form tiered hints, single-turn. Will escalate to a full answer at Tier 5 if the user insists. Use for quick conceptual unblocking outside the exercise loop.
+- `/answer-check week N question X.Y "<attempt>"` — grades a written attempt with `Correct/Wrong/Unclear`. No spoilers. Auto-fires `/week-answer-fill` on `Correct`.
+
+When the user asks about an unsolved exercise without specifying the mode, default to suggesting `/learn`.
 
 ## Slash Commands — quick reference
 
@@ -57,7 +77,8 @@ The user solves exercises on their own merit. A dedicated study agent will be se
 |---------|---------|
 | `/week-readme-setup` | Extract exercise questions from a `WeekN/*.pdf` into `WeekN/answers/README.md`. |
 | `/week-commands-generator` | Generate `WeekN/commands.md` with run instructions. |
+| `/learn` | Socratic teacher. Multi-turn scaffold with per-step verdict, no answers ever. Proposes `stuck.md` entries on `Wrong`. |
 | `/answer-check` | Grade a candidate answer; no spoilers. Auto-fires `/week-answer-fill` on `Correct`. |
 | `/week-answer-fill` | Insert a confirmed answer under the matching question heading. |
-| `/teach` | Hints and scaffolded problems — never the direct solution. |
+| `/teach` | Free-form tiered hints — escalates to a full answer at Tier 5 if user insists. |
 | `/commit` | Stage all changes and write a Conventional Commit message. |
