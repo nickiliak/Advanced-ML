@@ -45,19 +45,29 @@ Source material for both stages: weekly lecture PDFs, `WeekN/answers/README.md`,
 
 If unsure whether something counts as leakage, ask before producing.
 
-## Weekly Folder Status
+## Weekly Topics
 
-| Week | Topic | Status |
-|------|-------|--------|
-| 1  | VAE / Deep Latent Variable Models | partial — needs polish |
-| 2  | Normalizing Flows | partial — needs polish |
-| 3  | Diffusion / DDPM | partial — needs polish |
-| 5  | Manifold Learning & Latent Geometry | partial — needs polish |
-| 6  | (metrics) | **empty — run `/week-readme-setup` first** |
-| 7  | (geometry) | **empty — run `/week-readme-setup` first** |
-| 9  | Graph Node Embeddings | partial — needs polish |
-| 10 | GNNs — Graph Classification | partial — needs polish |
-| 11 | Graph Convolutions | partial — needs polish |
+All weeks have `WeekN/exercise.md` and a scaffolded `WeekN/answers/README.md`.
+
+| Week | Topic |
+|------|-------|
+| 1  | VAE / Deep Latent Variable Models |
+| 2  | Normalizing Flows |
+| 3  | Diffusion / DDPM |
+| 5  | Manifold Learning & Latent Geometry |
+| 6  | Metrics |
+| 7  | Geometry |
+| 9  | Graph Node Embeddings |
+| 10 | GNNs — Graph Classification |
+| 11 | Graph Convolutions |
+
+**Progress is computed on demand, not tracked here** (avoids drift). To see current per-week answered counts, run:
+
+```bash
+bash .claude/scripts/week_status.sh
+```
+
+…or ask Claude to scan `Week*/answers/README.md` for `Add your answer here` placeholders.
 
 [Projects/](Projects/) — three completed course projects (Deep-Generative-Modeling, VAE-Geometry, MUTAG-Gen-GNN). Treat as applied reference / worked examples when building cheatsheet sections.
 

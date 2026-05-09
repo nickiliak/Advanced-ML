@@ -50,6 +50,14 @@ which spans the unit sphere.
 
 *Hint:* recall $\cos^2(x) + \sin^2(x) = 1$.
 
+> **LMLG Eq. 5.21 (context).** Angle between curves on the manifold via the pullback inner product:
+>
+> $$\theta = \cos^{-1}\!\left( \frac{v_1^\top J_x^\top J_x\, v_2}{\|J_x v_1\| \cdot \|J_x v_2\|} \right).$$
+>
+> The pullback inner product on the latent space is $\langle v_1, v_2 \rangle_x = v_1^\top J_x^\top J_x\, v_2$. So the **pullback metric tensor** at $x$ is the $n \times n$ symmetric matrix
+> $$M(x) = J_f(x)^\top J_f(x).$$
+> This is the matrix to derive in part 2.
+
 ## Programming Exercises
 
 ### Exercise 5.5 (Curve Length — numerical and analytic)

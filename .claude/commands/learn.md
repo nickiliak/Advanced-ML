@@ -56,6 +56,14 @@ The skill drives a multi-turn Socratic dialogue. On each invocation turn:
    Chain complete. You've derived it.
    ```
    Do **not** restate the final answer — the user has already produced it across the chain.
+7. **Auto-fill answer (question mode only).** Immediately after `Chain complete.`:
+   - **Guard:** first read the matching question slot in `WeekN/answers/README.md`. Skip the fill if the slot is already populated (anything other than the `<!-- Add your answer here -->` placeholder, or empty). Never overwrite an existing answer. Report `Already filled → skipping` in one short line.
+   - Otherwise, consolidate the user's chain responses into a single coherent answer (clean notation, drop chat artifacts, keep the user's reasoning — do not introduce new content the user did not derive).
+   - Auto-fire `/week-answer-fill week <N> question <X.Y> "<consolidated answer>"` to insert it into `WeekN/answers/README.md` under the matching question heading.
+   - Do NOT ask for confirmation — the user has standing approval for chain-complete auto-fills.
+   - Skip only if the user explicitly says "don't fill" / "skip fill" in the same turn.
+   - Confirm the write in one short line (e.g. `Filled → Week5/answers/README.md Q5.1`).
+   - Concept mode: no fill (no question slot exists).
 
 ## Strict No-Spoiler Rules
 
@@ -77,7 +85,7 @@ The skill drives a multi-turn Socratic dialogue. On each invocation turn:
 - Final numeric values.
 - Filled-in derivation steps.
 
-## Stuck-Point Capture (propose-and-approve)
+## Stuck-Point Capture (auto-append)
 
 Trigger when **either**:
 - The verdict is `Wrong` (any time, on any step), or
@@ -89,13 +97,12 @@ Procedure:
    - [Q <X.Y>] <one-line description of what tripped them up> — <1-sentence note on the concept to revisit>
    ```
    For concept-mode (no question), use `[Concept: <topic>]` as the tag.
-2. Show the exact line to the user and ask:
-   > Append this to `ExamPrep/prep/WeekN/stuck.md`? (y/n)
-3. On `y`:
+2. **Append immediately — do NOT ask for confirmation.** The user has standing approval for stuck-point auto-writes.
    - If `ExamPrep/prep/WeekN/stuck.md` does not exist, create it with header `# Week <N> — Stuck Points` and a blank line, then append the entry.
    - If it exists, append the entry on a new line at the end of the file.
-   - Confirm the write in one short line.
-4. On `n` (or anything other than `y`/`yes`): do nothing, continue the Socratic loop.
+3. Confirm the write in one short line (e.g. `Logged → ExamPrep/prep/Week5/stuck.md`), then continue the Socratic loop with the re-ask / next-step.
+
+Skip the auto-append only if the user explicitly says "don't log this" / "skip stuck" in the same turn.
 
 Never write to `lecture.md` or `exercises.md` automatically — those grow through user-led notes work, not through this skill.
 
