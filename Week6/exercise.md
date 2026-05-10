@@ -25,6 +25,18 @@ Consider the Euclidean metric of $\mathbb{R}^d$, i.e. $G = I$.
 2. Derive the geodesic ode.
 3. What is the geodesic that connects points $x_1$ and $x_2$?
 
+**Reference (LMLG, Hauberg p.64) — used in 6.2 and 6.3:**
+
+Eq. 7.19 — Geodesic ODE:
+
+$$[\ddot c_t]_m = -\sum_{j=1}^{d}\sum_{k=1}^{d} \Gamma^{m}_{jk}(c_t)\,[\dot c_t]_j\,[\dot c_t]_k$$
+
+Eq. 7.20 — Christoffel coefficients:
+
+$$\Gamma^{m}_{jk}(c_t) = \frac{1}{2}\sum_{i=1}^{d} [\mathbf{G}_{c_t}^{-1}]_{mi}\left(2\,\frac{\partial [\mathbf{G}_{c_t}]_{ij}}{\partial [c_t]_k} - \frac{\partial [\mathbf{G}_{c_t}]_{jk}}{\partial [c_t]_i}\right)$$
+
+where $[\cdot]_i$ indexes the $i$-th vector component and $[\cdot]_{ij}$ the $(i,j)$ matrix entry.
+
 ### Exercise 6.3 (Quadratic metric)
 
 Consider a two-dimensional abstract manifold with the metric

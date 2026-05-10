@@ -10,6 +10,19 @@ This project uses **`uv`** for Python environment and package management.
 - Keep code and explanations simple and concise
 - Avoid over-engineering solutions
 
+## Math notation in chat (not in code)
+The user's chat renderer does NOT render LaTeX (`$...$` and `$$...$$` show as raw markup). Use **Unicode mathematical symbols** instead — they render universally:
+- Norms: ‖v‖, ‖v‖_Gₓ
+- Greek: α β γ δ ε θ λ μ π σ φ ψ ω, Σ Δ ∇
+- Operators: × · ∘ ⊗ ⊕ ⟨·,·⟩
+- Superscripts: x² x³ xⁿ xᵀ x⁻¹
+- Subscripts: x₁ x₂ xₙ xᵢ
+- Calculus: ∂ ∫ ∮ ∑ ∏ ∞ √ ≈ ≠ ≤ ≥ → ⇒ ↦
+- Sets: ℝ ℕ ℤ ℚ ℂ ∈ ∉ ⊂ ⊆ ∪ ∩
+- Logic: ∀ ∃ ¬ ∧ ∨
+
+For complex multi-line derivations use code blocks with these Unicode symbols. Inside actual `.py` / `.md` files (not chat), normal LaTeX is fine.
+
 ---
 
 # Exam Prep Context
