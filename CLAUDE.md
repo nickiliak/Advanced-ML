@@ -86,13 +86,14 @@ bash .claude/scripts/week_status.sh
 
 ## Solving Mode
 
-The user solves exercises on their own merit. Three modes available, pick by user intent:
+The user solves exercises on their own merit. Four modes available, pick by user intent:
 
 - `/learn week N question X.Y` — **Socratic loop**. Multi-turn scaffolding with per-step verdicts. Never reveals the answer, even if asked. Auto-proposes `stuck.md` entries on `Wrong` verdicts (user approves). Use this for **unsolved** exercises by default.
 - `/teach <free text>` — free-form tiered hints, single-turn. Will escalate to a full answer at Tier 5 if the user insists. Use for quick conceptual unblocking outside the exercise loop.
 - `/answer-check week N question X.Y "<attempt>"` — grades a written attempt with `Correct/Wrong/Unclear`. No spoilers. Auto-fires `/week-answer-fill` on `Correct`.
+- `/crunch week N question X.Y` — **post-conceptual escape hatch**. Computes the full answer end-to-end and auto-fills the README. Invoke **only after** `/learn` has settled the concept and the remainder is rote calculation. Refuses to run as a shortcut around `/learn` for unsolved concepts.
 
-When the user asks about an unsolved exercise without specifying the mode, default to suggesting `/learn`.
+When the user asks about an unsolved exercise without specifying the mode, default to suggesting `/learn`. Only suggest `/crunch` if the user has explicitly signalled the concept is settled.
 
 ## Slash Commands — quick reference
 
@@ -104,4 +105,5 @@ When the user asks about an unsolved exercise without specifying the mode, defau
 | `/answer-check` | Grade a candidate answer; no spoilers. Auto-fires `/week-answer-fill` on `Correct`. |
 | `/week-answer-fill` | Insert a confirmed answer under the matching question heading. |
 | `/teach` | Free-form tiered hints — escalates to a full answer at Tier 5 if user insists. |
+| `/crunch` | Compute the full answer end-to-end and auto-fill the README. Post-`/learn` escape hatch for rote calculations only. |
 | `/commit` | Stage all changes and write a Conventional Commit message. |
