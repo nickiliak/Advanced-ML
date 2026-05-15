@@ -77,14 +77,44 @@ so $u_k$ is an eigenvector of the cycle adjacency matrix with eigenvalue $\lambd
 ## Question B.2: Spectral domain graph convolution derivation
 
 **Answer:**
+Start from the vertex-domain graph convolution with a causal filter:
 
-<!-- Add your answer here -->
+$$\boldsymbol{y} = \sum_{k=0}^{N} h[k]\, \boldsymbol{A}^k\, \boldsymbol{x}.$$
+
+Substitute the eigendecomposition $\boldsymbol{A} = \boldsymbol{U}\, \boldsymbol{\Lambda}\, \boldsymbol{U}^{*}$. Because the eigenvectors are orthonormal (the adjacency of an undirected graph is symmetric, so the spectral theorem applies), $\boldsymbol{U}^{*}\boldsymbol{U} = \boldsymbol{I}$. Expanding $(\boldsymbol{U}\boldsymbol{\Lambda}\boldsymbol{U}^{*})^k$ telescopes through $k-1$ copies of $\boldsymbol{U}^{*}\boldsymbol{U} = \boldsymbol{I}$, giving
+
+$$\boldsymbol{A}^k = \boldsymbol{U}\, \boldsymbol{\Lambda}^k\, \boldsymbol{U}^{*}.$$
+
+Substitute and factor $\boldsymbol{U}$ and $\boldsymbol{U}^{*}$ (independent of $k$) outside the sum:
+
+$$\boldsymbol{y} = \sum_{k=0}^{N} h[k]\, \boldsymbol{U}\, \boldsymbol{\Lambda}^k\, \boldsymbol{U}^{*}\, \boldsymbol{x} = \boldsymbol{U} \left( \sum_{k=0}^{N} h[k]\, \boldsymbol{\Lambda}^k \right) \boldsymbol{U}^{*}\, \boldsymbol{x}.$$
+
+Apply the GFT to both sides by left-multiplying with $\boldsymbol{U}^{*}$. Using $\tilde{\boldsymbol{y}} = \boldsymbol{U}^{*} \boldsymbol{y}$, $\tilde{\boldsymbol{x}} = \boldsymbol{U}^{*} \boldsymbol{x}$, and $\boldsymbol{U}^{*}\boldsymbol{U} = \boldsymbol{I}$:
+
+$$\tilde{\boldsymbol{y}} = \boldsymbol{U}^{*} \boldsymbol{y} = (\boldsymbol{U}^{*}\boldsymbol{U}) \left( \sum_{k=0}^{N} h[k]\, \boldsymbol{\Lambda}^k \right) (\boldsymbol{U}^{*}\boldsymbol{x}) = \sum_{k=0}^{N} h[k]\, \boldsymbol{\Lambda}^k\, \tilde{\boldsymbol{x}}.$$
+
+In the spectral domain the graph convolution becomes a sum of powers of the *diagonal* matrix $\boldsymbol{\Lambda}$ acting on $\tilde{\boldsymbol{x}}$ — i.e. a per-frequency polynomial in the eigenvalues.
 
 ## Question B.3: Computational complexity — spectral vs vertex domain
 
 **Answer:**
+**Vertex-domain cost** ($\boldsymbol{y} = \sum_{k=0}^{N} h[k]\, \boldsymbol{A}^k\, \boldsymbol{x}$). Do not materialize the matrix powers. Apply $\boldsymbol{A}$ recursively to keep a running vector $\boldsymbol{v}_k = \boldsymbol{A}\, \boldsymbol{v}_{k-1}$ with $\boldsymbol{v}_0 = \boldsymbol{x}$. Each matrix-vector product on a dense $N\times N$ matrix costs $O(N^2)$, and we need $N+1$ of them, then scalar-weighted accumulation $\sum_k h[k]\, \boldsymbol{v}_k$ (negligible $O(N^2)$ total). Net per forward pass: $O(N \cdot N^2) = O(N^3)$.
 
-<!-- Add your answer here -->
+**Spectral-domain cost** ($\boldsymbol{y} = \boldsymbol{U}\, (\sum_{k=0}^{N} h[k]\, \boldsymbol{\Lambda}^k)\, \boldsymbol{U}^{*}\, \boldsymbol{x}$):
+- $\boldsymbol{U}^{*}\boldsymbol{x}$: one $N\times N$ matvec — $O(N^2)$.
+- $\sum_{k=0}^{N} h[k]\, \boldsymbol{\Lambda}^k$: $\boldsymbol{\Lambda}$ is diagonal, so this collapses to a diagonal matrix whose $i$-th entry is the polynomial $\sum_{k=0}^{N} h[k]\, \lambda_i^k$. Horner evaluation per eigenvalue is $O(N)$, over $N$ eigenvalues → $O(N^2)$.
+- diagonal · vector: $O(N)$.
+- $\boldsymbol{U} \cdot (\cdot)$: one matvec — $O(N^2)$.
+
+Net per forward pass: $O(N^2)$ — one order of magnitude better than the vertex form.
+
+**The catch — and why it's still a win.** Computing the eigendecomposition $\boldsymbol{A} = \boldsymbol{U}\, \boldsymbol{\Lambda}\, \boldsymbol{U}^{*}$ costs $O(N^3)$. *However*, when learning the filter $h[n]$, the graph adjacency $\boldsymbol{A}$ is fixed — only the scalar coefficients $h[0], \dots, h[N]$ are updated each gradient step. So $\boldsymbol{U}$ and $\boldsymbol{\Lambda}$ can be **precomputed once** and reused across all training iterations.
+
+Over $T$ training iterations:
+- Vertex: $T \cdot O(N^3)$.
+- Spectral: $O(N^3) + T \cdot O(N^2)$ — eigendecomposition amortized.
+
+Spectral wins as soon as $T \gg N$, which is the typical training regime. Likewise at inference time on the same graph, the precomputed $\boldsymbol{U}, \boldsymbol{\Lambda}$ keep each forward pass at $O(N^2)$.
 
 ## Programming Exercises
 
