@@ -8,6 +8,10 @@ Source: `02460_week1_exercises.pdf` (Advanced Machine Learning 02460, Feb 2026, 
 
 Consider probabilistic principal component analysis (PPCA), as described in section 5.2 of the textbook (Tomczak 2024). The PPCA model has three parameters $\sigma^2 \in \mathbb{R}_+$, $b \in \mathbb{R}^D$ and $W \in \mathbb{R}^{D\times M}$. Given a data set $\mathcal{D} = \{x_1, \dots, x_N\}$, show that the maximum likelihood estimate of $b$ is the mean of the data set, i.e. $\hat b = \bar x$. Do this by following the steps:
 
+Equation (5.6) — marginal in closed form:
+
+$$p(x) = \int \mathcal{N}(x \mid Wz + b, \sigma^2 I)\, \mathcal{N}(z \mid 0, I)\, dz = \mathcal{N}(x \mid b, WW^\top + \sigma^2 I).$$
+
 1. Based on equation (5.6), write the log-likelihood function $\ell(\sigma^2, b, W) = \ln p(\mathcal{D} \mid \sigma^2, b, W) = \sum_{n=1}^N \ln p(x_n \mid \sigma^2, b, W)$.
 2. Set the derivative of the log-likelihood with respect to $b$ equal to zero.
 
@@ -18,6 +22,10 @@ $$\frac{\partial}{\partial b}(x-b)^\top W(x-b) = -2W(x-b),$$
 (see Petersen and Pedersen 2012, eq. 86).
 
 ### Exercise 1.2 (KL form of ELBO)
+
+Equation (5.17) — amortized ELBO:
+
+$$\ln p(x) \geq \mathbb{E}_{z \sim q_\phi(z\mid x)}[\ln p(x\mid z)] - \mathbb{E}_{z \sim q_\phi(z\mid x)}[\ln q_\phi(z\mid x) - \ln p(z)].$$
 
 The second term of the ELBO in equation (5.17) of Tomczak (2024) can be written as a KL divergence:
 

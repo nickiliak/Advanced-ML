@@ -13,7 +13,33 @@ Show that for the PPCA model $p(y\mid x) = \mathcal{N}(y \mid Wx + b, \sigma^2 I
 
 **Answer:**
 
-<!-- Add your answer here -->
+**Step 1 — Marginal in closed form.** Equation (5.6) of Tomczak (2024) gives the marginal of the PPCA model as a Gaussian:
+
+$$p(x \mid \sigma^2, b, W) = \mathcal{N}(x \mid b,\; WW^\top + \sigma^2 I).$$
+
+Let $C := WW^\top + \sigma^2 I$ (avoids overloading $\Sigma$).
+
+**Step 2 — Log-likelihood.** With $\mathcal{D} = \{x_1, \dots, x_N\}$ iid, the joint factorises and the log converts the product to a sum. Using the multivariate Gaussian log-pdf $\ln \mathcal{N}(x \mid \mu, \Sigma) = -\tfrac{D}{2}\ln(2\pi) - \tfrac{1}{2}\ln |\Sigma| - \tfrac{1}{2}(x-\mu)^\top \Sigma^{-1}(x-\mu)$:
+
+$$\ell(\sigma^2, b, W) = \sum_{n=1}^N \left[ -\tfrac{D}{2}\ln(2\pi) - \tfrac{1}{2}\ln |C| - \tfrac{1}{2}(x_n - b)^\top C^{-1}(x_n - b) \right].$$
+
+**Step 3 — b-dependent part.** The constant and the log-det terms do not depend on $b$, so they vanish under $\partial / \partial b$. Only the quadratic survives:
+
+$$\frac{\partial \ell}{\partial b} = -\tfrac{1}{2} \sum_{n=1}^N \frac{\partial}{\partial b}\, (x_n - b)^\top C^{-1}(x_n - b).$$
+
+**Step 4 — Apply the matrix-calculus hint.** $C^{-1}$ is symmetric (since $C$ is symmetric positive definite). Using $\partial/\partial b\, (x-b)^\top W (x-b) = -2W(x-b)$ for symmetric $W$:
+
+$$\frac{\partial \ell}{\partial b} = -\tfrac{1}{2} \sum_{n=1}^N \bigl(-2 C^{-1}(x_n - b)\bigr) = \sum_{n=1}^N C^{-1}(x_n - b) = C^{-1} \sum_{n=1}^N (x_n - b).$$
+
+**Step 5 — Set to zero and solve.** Setting $\partial \ell / \partial b = 0$:
+
+$$C^{-1} \sum_{n=1}^N (x_n - b) = 0.$$
+
+Since $C$ is positive definite, $C^{-1}$ is invertible (its kernel is trivial), so
+
+$$\sum_{n=1}^N (x_n - b) = 0 \;\;\Longleftrightarrow\;\; \sum_{n=1}^N x_n - N b = 0 \;\;\Longleftrightarrow\;\; \hat b = \frac{1}{N}\sum_{n=1}^N x_n = \bar x. \qquad \blacksquare$$
+
+**Note.** The result $\hat b = \bar x$ does not depend on the specific covariance structure $WW^\top + \sigma^2 I$ — only on the fact that the covariance is invertible and does not depend on $b$. ML for the mean of any Gaussian with $b$-independent covariance is the sample mean.
 
 
 ## Question 1.2: KL form of ELBO + closed-form Gaussian KL
@@ -23,7 +49,44 @@ Show that for the PPCA model $p(y\mid x) = \mathcal{N}(y \mid Wx + b, \sigma^2 I
 
 **Answer:**
 
-<!-- Add your answer here -->
+### Part (a) — the second ELBO term is a KL divergence
+
+By definition, the KL divergence is an expectation under $q$ of the log ratio of the two densities:
+
+$$\mathrm{KL}[q_\phi(z\mid x) \,\|\, p(z)] = \int q_\phi(z\mid x) \, \ln\frac{q_\phi(z\mid x)}{p(z)}\, dz = \mathbb{E}_{z \sim q_\phi(z \mid x)}\!\left[\ln\frac{q_\phi(z\mid x)}{p(z)}\right].$$
+
+Using $\ln(a/b) = \ln a - \ln b$:
+
+$$\mathrm{KL}[q_\phi(z\mid x) \,\|\, p(z)] = \mathbb{E}_{z \sim q_\phi(z \mid x)}[\ln q_\phi(z\mid x) - \ln p(z)]. \qquad \blacksquare$$
+
+This is exactly the second ELBO term in equation (5.17), so the two ELBO expressions are equivalent.
+
+### Part (b) — closed-form KL between two univariate Gaussians
+
+Let $q = \mathcal{N}(\mu_1, \sigma_1^2)$ and $p = \mathcal{N}(\mu_2, \sigma_2^2)$. From part (a):
+
+$$\mathrm{KL}[q \,\|\, p] = \mathbb{E}_{z \sim q}[\ln q(z) - \ln p(z)].$$
+
+**Substitute the univariate Gaussian log-pdf** $\ln \mathcal{N}(z \mid \mu, \sigma^2) = -\tfrac{1}{2}\ln(2\pi\sigma^2) - (z-\mu)^2/(2\sigma^2)$ for both densities (mind the minus distributing over $\ln p$):
+
+$$\mathrm{KL}[q \,\|\, p] = \mathbb{E}_{z \sim q}\!\left[-\tfrac{1}{2}\ln(2\pi\sigma_1^2) - \frac{(z-\mu_1)^2}{2\sigma_1^2} + \tfrac{1}{2}\ln(2\pi\sigma_2^2) + \frac{(z-\mu_2)^2}{2\sigma_2^2}\right].$$
+
+**Linearity of expectation.** Constants come out unchanged; only the quadratic terms keep $\mathbb{E}_q[\cdot]$:
+
+$$= -\tfrac{1}{2}\ln(2\pi\sigma_1^2) + \tfrac{1}{2}\ln(2\pi\sigma_2^2) - \frac{\mathbb{E}_q[(z-\mu_1)^2]}{2\sigma_1^2} + \frac{\mathbb{E}_q[(z-\mu_2)^2]}{2\sigma_2^2}.$$
+
+**Evaluate the two expectations under $q = \mathcal{N}(\mu_1, \sigma_1^2)$:**
+
+- $\mathbb{E}_q[(z - \mu_1)^2] = \mathrm{Var}_q(z) = \sigma_1^2$ (definition of variance — $\mu_1$ is the mean of $z$ under $q$).
+- $\mathbb{E}_q[(z - \mu_2)^2]$: expand the square and use $\mathbb{E}_q[z] = \mu_1$, $\mathbb{E}_q[z^2] = \sigma_1^2 + \mu_1^2$:
+
+  $$\mathbb{E}_q[z^2 - 2\mu_2 z + \mu_2^2] = (\sigma_1^2 + \mu_1^2) - 2\mu_2\mu_1 + \mu_2^2 = \sigma_1^2 + (\mu_1 - \mu_2)^2.$$
+
+  This is the bias-variance identity: expected squared distance from a non-centered point $\mu_2$ = variance + squared bias.
+
+**Substitute and simplify the log term** (combine the two logs into a ratio; the $2\pi$ cancels; use $\tfrac{1}{2}\ln(\sigma_2^2/\sigma_1^2) = \ln(\sigma_2/\sigma_1)$):
+
+$$\mathrm{KL}[q \,\|\, p] = \tfrac{1}{2}\ln\!\frac{2\pi\sigma_2^2}{2\pi\sigma_1^2} - \frac{\sigma_1^2}{2\sigma_1^2} + \frac{\sigma_1^2 + (\mu_1 - \mu_2)^2}{2\sigma_2^2} = \ln\frac{\sigma_2}{\sigma_1} + \frac{\sigma_1^2 + (\mu_1 - \mu_2)^2}{2\sigma_2^2} - \tfrac{1}{2}. \qquad \blacksquare$$
 
 
 ## Question 1.3: Two-level hierarchical VAE — ELBO derivation
@@ -32,7 +95,54 @@ Derive the two-level ELBO from $\ln p(x) = \ln \iint p(x\mid z_1) p(z_1\mid z_2)
 
 **Answer:**
 
-<!-- Add your answer here -->
+### Setup
+
+Two-level generative model: $p(x, z_1, z_2) = p(x\mid z_1)\, p(z_1\mid z_2)\, p(z_2)$. Bottom-up variational distribution: $Q(z_1, z_2 \mid x) = q(z_1 \mid x)\, q(z_2 \mid z_1)$.
+
+### Step 1 — Multiply-and-divide by $Q$, then apply Jensen
+
+Starting from the log-marginal and inserting $1 = Q/Q$:
+
+$$\ln p(x) = \ln \iint p(x\mid z_1)\, p(z_1\mid z_2)\, p(z_2)\, dz_1\, dz_2 = \ln \iint Q(z_1, z_2\mid x) \cdot \frac{p(x\mid z_1)\, p(z_1\mid z_2)\, p(z_2)}{Q(z_1, z_2\mid x)}\, dz_1\, dz_2.$$
+
+The double integral against the joint density $Q$ is an expectation under $Q$:
+
+$$\ln p(x) = \ln \mathbb{E}_{Q(z_1, z_2 \mid x)}\!\left[\frac{p(x\mid z_1)\, p(z_1\mid z_2)\, p(z_2)}{Q(z_1, z_2\mid x)}\right].$$
+
+Applying Jensen's inequality ($\ln$ is concave, so $\ln \mathbb{E}[Y] \geq \mathbb{E}[\ln Y]$):
+
+$$\mathrm{ELBO}(x) = \mathbb{E}_{Q(z_1, z_2 \mid x)}\!\left[\ln \frac{p(x\mid z_1)\, p(z_1\mid z_2)\, p(z_2)}{q(z_2\mid z_1)\, q(z_1\mid x)}\right].$$
+
+### Step 2 — Expand log of products and regroup into three pieces
+
+Using $\ln(abc/de) = \ln a + \ln b + \ln c - \ln d - \ln e$ and regrouping:
+
+$$\mathrm{ELBO}(x) = \mathbb{E}_Q\!\left[\ln p(x\mid z_1) - \ln \frac{q(z_1\mid x)}{p(z_1\mid z_2)} - \ln \frac{q(z_2\mid z_1)}{p(z_2)}\right].$$
+
+The three pieces (named for what follows):
+- **Group A:** $\ln p(x\mid z_1)$ — depends only on $z_1$ (reconstruction term).
+- **Group B:** $\ln \frac{q(z_1\mid x)}{p(z_1\mid z_2)}$ — depends on both $z_1$ and $z_2$ (genuinely needs $\mathbb{E}_Q$).
+- **Group C:** $\ln \frac{q(z_2\mid z_1)}{p(z_2)}$ — function of $z_2$ conditional on $z_1$ (becomes a KL).
+
+### Step 3 — Reduce each group to its minimal expectation scope (Form 1)
+
+**Key fact:** if $f$ doesn't depend on $z_2$, then $\mathbb{E}_Q[f(z_1)] = \mathbb{E}_{q(z_1\mid x)}[f(z_1)]$, because the inner $\int q(z_2\mid z_1)\, dz_2 = 1$.
+
+- **Group A:** $\mathbb{E}_Q[\ln p(x\mid z_1)] = \mathbb{E}_{q(z_1\mid x)}[\ln p(x\mid z_1)]$ (collapses).
+- **Group B:** stays as $\mathbb{E}_Q[\ln (q(z_1\mid x)/p(z_1\mid z_2))]$ (genuinely depends on both).
+- **Group C:** factor $Q = q(z_1\mid x)\, q(z_2\mid z_1)$ and do the **inner $z_2$ integral first**:
+
+  $$\mathbb{E}_Q\!\left[\ln \frac{q(z_2\mid z_1)}{p(z_2)}\right] = \int q(z_1\mid x) \underbrace{\left[\int q(z_2\mid z_1)\, \ln \frac{q(z_2\mid z_1)}{p(z_2)}\, dz_2\right]}_{= \,\mathrm{KL}[q(z_2\mid z_1)\, \|\, p(z_2)]\text{ (a function of }z_1\text{)}}\, dz_1 = \mathbb{E}_{q(z_1\mid x)}\!\bigl[\mathrm{KL}[q(z_2\mid z_1)\,\|\,p(z_2)]\bigr].$$
+
+Putting the three groups together yields **Form 1**:
+
+$$\boxed{\mathrm{ELBO}(x) = \mathbb{E}_{z_1 \sim q(z_1 \mid x)}[\ln p(x \mid z_1)] - \mathbb{E}_{Q(z_1, z_2 \mid x)}\!\left[\ln \frac{q(z_1\mid x)}{p(z_1\mid z_2)}\right] - \mathbb{E}_{z_1 \sim q(z_1 \mid x)}\!\bigl[\mathrm{KL}[q(z_2 \mid z_1)\,\|\,p(z_2)]\bigr].}$$
+
+### Step 4 — Rebundle under a single $\mathbb{E}_Q$ to reach eq (5.82)
+
+The reverse of Step 3 also holds **for free**: when an integrand doesn't depend on $z_2$, you can relabel $\mathbb{E}_{q(z_1\mid x)}$ as $\mathbb{E}_Q$ **without changing the integrand**, since $\int q(z_2\mid z_1)\, dz_2 = 1$. Apply this to terms 1 and 3 (term 2 is already under $\mathbb{E}_Q$), then merge by linearity:
+
+$$\boxed{\mathrm{ELBO}(x) = \mathbb{E}_{Q(z_1, z_2\mid x)}\!\left[\ln p(x\mid z_1) - \ln \frac{q(z_1\mid x)}{p(z_1\mid z_2)} - \mathrm{KL}[q(z_2\mid z_1)\,\|\,p(z_2)]\right].} \qquad \text{(eq 5.82) } \blacksquare$$
 
 
 ## Programming Exercises
