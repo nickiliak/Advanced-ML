@@ -10,7 +10,16 @@ Show that the linear transformation $f(x) = -x + a$ is volume-preserving (cf. se
 
 **Answer:**
 
-<!-- Add your answer here -->
+**Volume-preserving** means $|\det J_f| = 1$ (the change-of-variables factor is unity, so volume is unchanged).
+
+Compute the Jacobian. For $f : \mathbb{R}^D \to \mathbb{R}^D$ with $f_i(x) = -x_i + a_i$:
+$$ (J_f)_{ij} = \frac{\partial f_i}{\partial x_j} = -\delta_{ij}, $$
+so $J_f = -I_D$ (diagonal matrix with $-1$ on every diagonal entry).
+
+Determinant of a diagonal matrix is the product of its diagonal entries:
+$$ \det J_f = \prod_{i=1}^{D} (-1) = (-1)^D. $$
+
+Therefore $|\det J_f| = |(-1)^D| = 1$, so $f$ is volume-preserving. $\blacksquare$
 
 
 ## Question 2.2: Inverse of a composition of invertible functions
@@ -19,7 +28,21 @@ For $F = f_K \circ \dots \circ f_1$ with each $f_k$ invertible, show $F^{-1} = f
 
 **Answer:**
 
-<!-- Add your answer here -->
+Proof by induction on $K$.
+
+**Base case ($K = 2$).** Let $F = f_2 \circ f_1$ and $G = f_1^{-1} \circ f_2^{-1}$. Compose:
+$$ G \circ F = (f_1^{-1} \circ f_2^{-1}) \circ (f_2 \circ f_1) = f_1^{-1} \circ (f_2^{-1} \circ f_2) \circ f_1 = f_1^{-1} \circ \text{id} \circ f_1 = f_1^{-1} \circ f_1 = \text{id}. $$
+Symmetrically $F \circ G = \text{id}$. Since inverses are unique and $G$ satisfies both inverse equations, $G = F^{-1}$, i.e.
+$$ (f_2 \circ f_1)^{-1} = f_1^{-1} \circ f_2^{-1}. $$
+
+**Inductive step.** Assume the claim holds for $K - 1$ factors. Consider $F = f_K \circ f_{K-1} \circ \dots \circ f_1$. Split off the last applied function: let
+$$ H := f_{K-1} \circ f_{K-2} \circ \dots \circ f_1, \qquad \text{so } F = f_K \circ H. $$
+This is a two-function composition, so by the base case,
+$$ F^{-1} = (f_K \circ H)^{-1} = H^{-1} \circ f_K^{-1}. $$
+By the inductive hypothesis applied to $H$ (which has $K-1$ factors),
+$$ H^{-1} = f_1^{-1} \circ f_2^{-1} \circ \dots \circ f_{K-1}^{-1}. $$
+Substituting,
+$$ F^{-1} = f_1^{-1} \circ f_2^{-1} \circ \dots \circ f_{K-1}^{-1} \circ f_K^{-1}. \qquad \blacksquare $$
 
 
 ## Question 2.3: $|\det J_{g \circ f}| = |\det J_g|\,|\det J_f|$
